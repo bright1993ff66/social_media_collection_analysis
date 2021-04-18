@@ -16,6 +16,7 @@ path_filesaving = "/home/ubuntu/happyplaces/newyork/streaming" # Please provide 
 setwd(path_filesaving)
 
 # The City of New York,
+# Use New York as an example
 loc_tw = "New York" # city name
 loc_tw_bx = c(-74.262714,40.492848,-73.693046,40.919761) # lon_min, lat_min, lon_max, lat_max
 
