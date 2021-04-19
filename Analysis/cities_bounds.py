@@ -2,7 +2,7 @@ import os
 import pytz
 
 # The project path
-heat_tweet_path = r'D:\Projects\Heat_tweets'
+heat_tweet_path = r'XXX'
 # The happyplaces_path should contain all the names of cities as the folder name
 happyplaces_path = r'XXX'
 # The path below used to save the tweets posted in the open space
