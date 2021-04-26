@@ -28,6 +28,7 @@ The following links give the source of other data sources for urban data analysi
 
 - [ChinaAdminDivisionSHP](https://github.com/GaryBikini/ChinaAdminDivisonSHP): Chinese administrative division vector diagram, Shapefile format, four levels: country, province, city, district/county
 - [bbike openstreetmap extractor](https://extract.bbbike.org/): The OpenStreetMap data extractor
+- [Hong Kong Monthly Traffic and Transport Digest](https://www.td.gov.hk/en/transport_in_hong_kong/transport_figures/monthly_traffic_and_transport_digest/index.html): The monthly key statistics of HK transportation data
 
 ## 5. Requirements
 
