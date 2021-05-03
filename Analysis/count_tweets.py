@@ -8,7 +8,8 @@ import pandas as pd
 
 import data_paths
 from cities_bounds import cities_dict_foreign, open_space_saving_path
-from utils import transform_string_time_to_datetime, merge_dict, create_dataframe_from_dict, sum_dataframe_list_count
+from utils import transform_time_string_to_utc_time, transform_string_time_to_datetime, merge_dict, \
+    create_dataframe_from_dict, sum_dataframe_list_count
 from visualizations import create_day_plot_for_one_count, create_hour_weekday_plot
 
 
@@ -20,12 +21,13 @@ class CountTweets(object):
 
     saving_path_for_month = data_paths.count_tweet_month_path
 
-    def __init__(self, city_name, city_profile_dict, start_time, end_time):
+    def __init__(self, city_name, city_profile_dict, start_time, end_time, utc_or_not):
         assert city_name in city_profile_dict, 'The name of the city is not right!'
         self.city_name = city_name
         self.city_bounding_box = city_profile_dict[city_name][0]
         self.city_timezone = city_profile_dict[city_name][1]
         self.city_loc = city_profile_dict[city_name][2]
+        self.count_in_utc = utc_or_not
         self.considered_year_list = ['2016', '2017', '2018', '2019', '2020']
         self.considered_quarter_list = ['Q1', 'Q2', 'Q3', 'Q4']
         self.start_time = start_time
@@ -60,14 +62,18 @@ class CountTweets(object):
                             geocoded_tweet_counter = Counter()
                         else:
                             geocoded_tweet_city_copy = geocoded_tweet_city.copy()
-                            geocoded_tweet_city_copy['local_time'] = geocoded_tweet_city_copy.apply(
-                                lambda row: transform_string_time_to_datetime(
-                                    time_string=row['created_at'], target_time_zone=self.city_timezone), axis=1)
+                            if self.count_in_utc:
+                                geocoded_tweet_city_copy['clean_time'] = geocoded_tweet_city_copy.apply(
+                                    lambda row: transform_time_string_to_utc_time(time_string=row['created_at']), axis=1)
+                            else:
+                                geocoded_tweet_city_copy['clean_time'] = geocoded_tweet_city_copy.apply(
+                                    lambda row: transform_string_time_to_datetime(
+                                        time_string=row['created_at'], target_time_zone=self.city_timezone), axis=1)
                             geocoded_tweet_city_copy['year_month_day_hour_weekday'] = geocoded_tweet_city_copy.apply(
-                                lambda row: str(row['local_time'].year) + '_' + str(
-                                    row['local_time'].month) + '_' + str(
-                                    row['local_time'].day) + '_' + str(
-                                    row['local_time'].hour) + '_' + str(row['local_time'].weekday()), axis=1)
+                                lambda row: str(row['clean_time'].year) + '_' + str(
+                                    row['clean_time'].month) + '_' + str(
+                                    row['clean_time'].day) + '_' + str(
+                                    row['clean_time'].hour) + '_' + str(row['clean_time'].weekday()), axis=1)
                             geocoded_tweet_counter = Counter(geocoded_tweet_city_copy['year_month_day_hour_weekday'])
                         considered_geocoded_time_count_dict = merge_dict(sum_dict=considered_geocoded_time_count_dict,
                                                                          a_dict=geocoded_tweet_counter)
@@ -119,14 +125,18 @@ class CountTweets(object):
                             geocoded_tweet_counter = Counter()
                         else:
                             geocoded_tweet_city_copy = geocoded_place_tweet_city.copy()
-                            geocoded_tweet_city_copy['local_time'] = geocoded_tweet_city_copy.apply(
-                                lambda row: transform_string_time_to_datetime(
-                                    time_string=row['created_at'], target_time_zone=self.city_timezone), axis=1)
+                            if self.count_in_utc:
+                                geocoded_tweet_city_copy['clean_time'] = geocoded_tweet_city_copy.apply(
+                                    lambda row: transform_time_string_to_utc_time(time_string=row['created_at']), axis=1)
+                            else:
+                                geocoded_tweet_city_copy['clean_time'] = geocoded_tweet_city_copy.apply(
+                                    lambda row: transform_string_time_to_datetime(
+                                        time_string=row['created_at'], target_time_zone=self.city_timezone), axis=1)
                             geocoded_tweet_city_copy['year_month_day_hour_weekday'] = geocoded_tweet_city_copy.apply(
-                                lambda row: str(row['local_time'].year) + '_' + str(
-                                    row['local_time'].month) + '_' + str(
-                                    row['local_time'].day) + '_' + str(
-                                    row['local_time'].hour) + '_' + str(row['local_time'].weekday()), axis=1)
+                                lambda row: str(row['clean_time'].year) + '_' + str(
+                                    row['clean_time'].month) + '_' + str(
+                                    row['clean_time'].day) + '_' + str(
+                                    row['clean_time'].hour) + '_' + str(row['clean_time'].weekday()), axis=1)
                             geocoded_tweet_counter = Counter(geocoded_tweet_city_copy['year_month_day_hour_weekday'])
                         geocoded_place_time_count_dict = merge_dict(sum_dict=geocoded_place_time_count_dict,
                                                                          a_dict=geocoded_tweet_counter)
@@ -183,11 +193,17 @@ class CountTweets(object):
                             geocoded_tweet_counter = Counter()
                         else:
                             geocoded_tweet_city_copy = geocoded_tweet_city.copy()
-                            geocoded_tweet_city_copy['local_time'] = geocoded_tweet_city_copy.apply(
-                                lambda row: transform_string_time_to_datetime(
-                                    time_string=row['created_at'], target_time_zone=self.city_timezone), axis=1)
+                            if self.count_in_utc:
+                                geocoded_tweet_city_copy['clean_time'] = geocoded_tweet_city_copy.apply(
+                                    lambda row: transform_time_string_to_utc_time(time_string=row['created_at']),
+                                    axis=1)
+                            else:
+                                geocoded_tweet_city_copy['clean_time'] = geocoded_tweet_city_copy.apply(
+                                    lambda row: transform_string_time_to_datetime(time_string=row['created_at'],
+                                                                                  target_time_zone=self.city_timezone),
+                                    axis=1)
                             geocoded_tweet_city_copy['year_month'] = geocoded_tweet_city_copy.apply(
-                                lambda row: str(row['local_time'].year) + '_' + str(row['local_time'].month), axis=1)
+                                lambda row: str(row['clean_time'].year) + '_' + str(row['clean_time'].month), axis=1)
                             geocoded_tweet_counter = Counter(geocoded_tweet_city_copy['year_month'])
 
                         # Process the dataframe with place_lat and place_lon
@@ -195,11 +211,16 @@ class CountTweets(object):
                             geocoded_place_tweet_city_copy = pd.DataFrame()
                         else:
                             geocoded_place_tweet_city_copy = geocoded_place_tweet_city.copy()
-                            geocoded_place_tweet_city_copy['local_time'] = geocoded_place_tweet_city_copy.apply(
-                                lambda row: transform_string_time_to_datetime(
-                                    row['created_at'], target_time_zone=self.city_timezone), axis=1)
+                            if self.count_in_utc:
+                                geocoded_place_tweet_city_copy['clean_time'] = geocoded_place_tweet_city_copy.apply(
+                                    lambda row: transform_time_string_to_utc_time(row['created_at']), axis=1)
+                            else:
+                                geocoded_place_tweet_city_copy['clean_time'] = geocoded_place_tweet_city_copy.apply(
+                                    lambda row: transform_string_time_to_datetime(row['created_at'],
+                                                                                  target_time_zone=self.city_timezone),
+                                    axis=1)
                             geocoded_place_tweet_city_copy['year_month'] = geocoded_place_tweet_city_copy.apply(
-                                lambda row: str(row['local_time'].year) + '_' + str(row['local_time'].month), axis=1)
+                                lambda row: str(row['clean_time'].year) + '_' + str(row['clean_time'].month), axis=1)
 
                         combined_tweet = pd.concat([geocoded_tweet_city_copy, geocoded_place_tweet_city_copy], axis=0)
                         if 'year_month' in combined_tweet:
@@ -226,8 +247,12 @@ class CountTweets(object):
         count_dataframe['time'] = key_vals
         count_dataframe['geocoded_count'] = [considered_geocoded_time_count_dict[key] for key in key_vals]
         count_dataframe['all_count'] = [considered_all_time_count_dict[key] for key in key_vals]
-        count_dataframe.to_csv(os.path.join(self.saving_path_for_month, self.city_name + '_tweet_count.csv'),
-                               encoding='utf-8')
+        if self.count_in_utc:
+            count_dataframe.to_csv(os.path.join(self.saving_path_for_month, self.city_name + '(UTC)_tweet_count.csv'),
+                                   encoding='utf-8')
+        else:
+            count_dataframe.to_csv(os.path.join(self.saving_path_for_month, self.city_name + 'tweet_count.csv'),
+                                   encoding='utf-8')
 
     def count_tweets_quarterly(self):
         """
@@ -297,7 +322,10 @@ class CountTweets(object):
         select_columns = ['user_id_str', 'id_str', 'lat', 'lon', 'place_lat', 'place_lon', 'created_at',
                           'text', 'verified', 'url', 'geo_enabled', 'lang', 'user_lang', 'country']
         result_dataframe_final = result_dataframe_without_duplicates[select_columns]
-        result_dataframe_final.to_csv(os.path.join(save_path, save_filename), encoding='utf-8')
+        if self.count_in_utc:
+            result_dataframe_final.to_csv(os.path.join(save_path, '(UTC)'+save_filename), encoding='utf-8')
+        else:
+            result_dataframe_final.to_csv(os.path.join(save_path, save_filename), encoding='utf-8')
 
     def get_missing_times(self):
         """
@@ -420,8 +448,8 @@ class CountTweets(object):
 
 class CountTweetsOpenSpace(object):
 
-    def __init__(self, city_name: str, data_loc: str, start_time, end_time, timezone: pytz.timezone, save_loc: str,
-                 save_filename: str):
+    def __init__(self, city_name: str, data_loc: str, start_time, end_time, utc_or_not,
+                 timezone: pytz.timezone, save_loc: str, save_filename: str):
         """
         Count the tweets posted in one city's open space
         :param city_name: the name of the studied city
@@ -436,6 +464,7 @@ class CountTweetsOpenSpace(object):
         self.save_loc = save_loc
         self.start_time = start_time
         self.end_time = end_time
+        self.count_in_utc = utc_or_not
         self.save_filename = save_filename
 
     def count_tweets_hourly(self, day_title: str, hour_title: str, weekday_title: str, day_filename: str,
@@ -450,15 +479,21 @@ class CountTweetsOpenSpace(object):
         for file in os.listdir(self.data_loc):
             cur_time = self.start_time
             if file.endswith('.csv'):
+                print('Analyzing the file {} saving the tweets posted in open space...'.format(file))
                 dataframe = pd.read_csv(os.path.join(self.data_loc, file), encoding='utf-8', index_col=0)
                 # Get the local time and year, month, day, hour attributes
                 print('Coping with the time attributes...')
-                dataframe['local_time'] = dataframe.apply(
-                    lambda row: transform_string_time_to_datetime(row['created_at'], target_time_zone=self.timezone), axis=1)
-                dataframe['year'] = dataframe.apply(lambda row: row['local_time'].year, axis=1)
-                dataframe['month'] = dataframe.apply(lambda row: row['local_time'].month, axis=1)
-                dataframe['day'] = dataframe.apply(lambda row: row['local_time'].day, axis=1)
-                dataframe['hour'] = dataframe.apply(lambda row: row['local_time'].hour, axis=1)
+                if self.count_in_utc:
+                    dataframe['clean_time'] = dataframe.apply(
+                        lambda row: transform_time_string_to_utc_time(row['created_at']), axis=1)
+                else:
+                    dataframe['clean_time'] = dataframe.apply(
+                        lambda row: transform_string_time_to_datetime(row['created_at'],
+                                                                      target_time_zone=self.timezone), axis=1)
+                dataframe['year'] = dataframe.apply(lambda row: row['clean_time'].year, axis=1)
+                dataframe['month'] = dataframe.apply(lambda row: row['clean_time'].month, axis=1)
+                dataframe['day'] = dataframe.apply(lambda row: row['clean_time'].day, axis=1)
+                dataframe['hour'] = dataframe.apply(lambda row: row['clean_time'].hour, axis=1)
                 print('Done!')
 
                 # Count the number of tweets in each hour
@@ -487,44 +522,73 @@ class CountTweetsOpenSpace(object):
                 result_dataframe['open_space_count'] = result_count_list
                 result_dataframe_list.append(result_dataframe)
         combined_result_dataframe = sum_dataframe_list_count(result_dataframe_list)
-        print('Counting the number of tweets on each day...')
-        create_day_plot_for_one_count(combined_result_dataframe, title=day_title,
-                                      start_date=self.start_time, end_date=self.end_time,
-                                      save_filename=day_filename, in_china=False)
-        print('Done! Counting the number of tweets in each hour and weekday...')
-        create_hour_weekday_plot(combined_result_dataframe, title_hour=hour_title, title_weekday=weekday_title,
-                                 color_hour='#FB8072', color_weekday='#80B1D3', hour_save_filename=hour_filename,
-                                 weekday_save_filename=weekday_filename, in_china=False)
+        if self.count_in_utc:
+            print('Counting the number of tweets on each day...')
+            create_day_plot_for_one_count(combined_result_dataframe, title=day_title,
+                                          start_date=self.start_time, end_date=self.end_time,
+                                          save_filename='(UTC)'+day_filename, in_china=False)
+            print('Done! Counting the number of tweets in each hour and weekday...')
+            create_hour_weekday_plot(combined_result_dataframe, title_hour=hour_title, title_weekday=weekday_title,
+                                     color_hour='#FB8072', color_weekday='#80B1D3',
+                                     hour_save_filename='(UTC)'+hour_filename,
+                                     weekday_save_filename='(UTC)'+weekday_filename, in_china=False)
+        else:
+            print('Counting the number of tweets on each day...')
+            create_day_plot_for_one_count(combined_result_dataframe, title=day_title,
+                                          start_date=self.start_time, end_date=self.end_time,
+                                          save_filename=day_filename, in_china=False)
+            print('Done! Counting the number of tweets in each hour and weekday...')
+            create_hour_weekday_plot(combined_result_dataframe, title_hour=hour_title, title_weekday=weekday_title,
+                                     color_hour='#FB8072', color_weekday='#80B1D3', hour_save_filename=hour_filename,
+                                     weekday_save_filename=weekday_filename, in_china=False)
         print('Done!')
         if os.path.exists(os.path.join(self.save_loc, self.city_name)):
-            combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name, self.save_filename),
-                                             encoding='utf-8')
+            if self.count_in_utc:
+                combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name,
+                                                              '(UTC)'+self.save_filename), encoding='utf-8')
+            else:
+                combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name,
+                                                              self.save_filename), encoding='utf-8')
         else:
             os.mkdir(os.path.join(self.save_loc, self.city_name))
-            combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name, self.save_filename),
-                                             encoding='utf-8')
+            if self.count_in_utc:
+                combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name,
+                                                              '(UTC)'+self.save_filename), encoding='utf-8')
+            else:
+                combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name,
+                                                              self.save_filename), encoding='utf-8')
         return combined_result_dataframe
 
 
 if __name__ == '__main__':
 
-    # Double check the Atlanta, Boston, Chicago, New York, Singapore
-    considered_cities = {'chicago', 'new_york'}
+    processed_cities = {'san_francisco', 'new_york', 'chicago', 'los_angeles', 'atlanta', 'bangkok',
+                        'boston', 'chicago', 'dhaka', 'hong_kong', 'jakarta', 'kuala_lumper', 'london',
+                        'los_angeles', 'mumbai', 'netherlands', 'new_york', 'riyadh', 'singapore', 'tokyo'}
     for city in cities_dict_foreign:
-        if city in considered_cities:
+        if city not in processed_cities:
             print("Coping with the city: {}".format(city))
-            timezone = cities_dict_foreign[city][1]
+            timezone = pytz.utc
             count_obj = CountTweets(city_name=city, city_profile_dict=cities_dict_foreign,
-                                       start_time=datetime(2016, 5, 1, tzinfo=timezone),
-                                       end_time=datetime(2020, 12, 31, tzinfo=timezone))
+                                    start_time=datetime(2016, 5, 1, tzinfo=timezone),
+                                    end_time=datetime(2020, 12, 31, tzinfo=timezone),
+                                    utc_or_not=True)
             geocoded_count_dataframe = count_obj.count_geocoded_tweets_hour()
             if os.path.exists(os.path.join(data_paths.count_daily_hour_path, city)):
-                geocoded_count_dataframe.to_csv(os.path.join(data_paths.count_daily_hour_path, city,
-                                                             '{}_hour_count.csv'.format(city)))
+                if count_obj.count_in_utc:
+                    geocoded_count_dataframe.to_csv(os.path.join(data_paths.count_daily_hour_path, city,
+                                                                 '(UTC){}_hour_count.csv'.format(city)))
+                else:
+                    geocoded_count_dataframe.to_csv(os.path.join(data_paths.count_daily_hour_path, city,
+                                                                 '{}_hour_count.csv'.format(city)))
             else:
                 os.mkdir(os.path.join(data_paths.count_daily_hour_path, city))
-                geocoded_count_dataframe.to_csv(os.path.join(data_paths.count_daily_hour_path, city,
-                                                             '{}_hour_count.csv'.format(city)))
+                if count_obj.count_in_utc:
+                    geocoded_count_dataframe.to_csv(os.path.join(data_paths.count_daily_hour_path, city,
+                                                                 '(UTC){}_hour_count.csv'.format(city)))
+                else:
+                    geocoded_count_dataframe.to_csv(os.path.join(data_paths.count_daily_hour_path, city,
+                                                                 '{}_hour_count.csv'.format(city)))
 
             # Count the number of tweets posted in the open space of one city
             open_space_count_obj = CountTweetsOpenSpace(city_name=city,
@@ -533,23 +597,33 @@ if __name__ == '__main__':
                                                         end_time=datetime(2020, 12, 31, tzinfo=timezone),
                                                         timezone=timezone,
                                                         save_loc=data_paths.count_daily_hour_path,
-                                                        save_filename='{}_open_space_tweet_count.csv'.format(city))
+                                                        save_filename='{}_open_space_tweet_count.csv'.format(city),
+                                                        utc_or_not=True)
             combined_open_space_dataframe = open_space_count_obj.count_tweets_hourly(
                 day_title='Number of Tweets Posted in {} Open Space on Each Day'.format(city),
                 hour_title='Number of Tweets Posted in {} Open Space in Each Hour'.format(city),
                 weekday_title='Number of Tweets Posted in {} Open Space on Each Weekday'.format(city),
                 day_filename='{}_open_space_day.png'.format(city), hour_filename='{}_open_space_hour.png'.format(city),
                 weekday_filename='{}_open_space_weekday.png'.format(city))
-
             # Combine the result and save
             count_final = pd.merge(left=geocoded_count_dataframe, right=combined_open_space_dataframe,
                                    on=['year', 'month', 'day', 'hour', 'weekday'])
             count_final['percent'] = (count_final['open_space_count'] / count_final['total_count']).replace(
                 to_replace=[np.inf, np.nan], value=0)
             if os.path.exists(os.path.join(data_paths.count_daily_hour_path, city)):
-                count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
-                                                 '{}_count_combine.csv'.format(city))))
+                if count_obj.count_in_utc:
+                    count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
+                                                     '(UTC){}_count_combine.csv'.format(city))))
+                else:
+                    count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
+                                                     '{}_count_combine.csv'.format(city))))
             else:
                 os.mkdir(os.path.join(data_paths.count_daily_hour_path, city))
-                count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
-                                                 '{}_count_combine.csv'.format(city))))
+                if count_obj.count_in_utc:
+                    count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
+                                                     '(UTC){}_count_combine.csv'.format(city))))
+                else:
+                    count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
+                                                     '{}_count_combine.csv'.format(city))))
+        else:
+            print("The city {} has been processed and counted".format(city))
