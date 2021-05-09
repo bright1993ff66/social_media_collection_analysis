@@ -37,6 +37,7 @@ The following packages should be considered before managing this project:
 - Python 3.7 or later
 - R 3.4.1 or later
 - Spatial data analysis: [geopandas](https://geopandas.org/)
+  - The installation process for geopandas on windows is quite complicated, especially with pip. Please check [this stackoverflow post](https://stackoverflow.com/questions/56958421/pip-install-geopandas-on-windows) for more information.
 - Data frame and computation: [numpy](https://numpy.org/) and [pandas](https://pandas.pydata.org/)
 - Visualizations: [matplotlib](https://matplotlib.org/stable/index.html)
 
