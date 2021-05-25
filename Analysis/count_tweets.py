@@ -12,6 +12,9 @@ from utils import transform_time_string_to_utc_time, transform_string_time_to_da
     create_dataframe_from_dict, sum_dataframe_list_count
 from visualizations import create_day_plot_for_one_count, create_hour_weekday_plot
 
+# Cope with some bad latitude and longitude data
+lat_lon_start_tuple = tuple([str(val) for val in range(10)] + ['-'])
+
 
 class CountTweets(object):
 
@@ -52,7 +55,9 @@ class CountTweets(object):
                     try:
                         dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file), encoding='utf-8',
                                                      errors='ignore'), index_col=0)
+                        # print(dataframe['lat'].dtype.name)
                         geocoded_dataframe = dataframe.loc[~dataframe['lat'].isnull()]
+                        # print(geocoded_dataframe['lat'].dtype.name)
                         geocoded_without_duplicates = geocoded_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_tweet_city = CountTweets.find_tweet_in_city(
                             geocoded_without_duplicates, bounding_box_vals=self.city_bounding_box)
@@ -397,12 +402,13 @@ class CountTweets(object):
         lon_min, lon_max = bounding_box_vals[0], bounding_box_vals[2]
         # Cope with some bad rows where the geoinformation is stored as a strange string
         if (dataframe['lat'].dtype.name != 'float64') or (dataframe['lon'].dtype.name != 'float64'):
-            print('The geoinformation of this dataframe is not saved correctly')
+            print('Something wrong with the datatype of latitude and longitude...')
             dataframe_copy = dataframe.copy()
             dataframe_copy['lat'] = dataframe_copy['lat'].astype(str)
             dataframe_copy['lon'] = dataframe_copy['lon'].astype(str)
-            dataframe_copy_select = dataframe_copy[dataframe_copy['lat'].str.startswith(tuple(str(val) for val in range(10)))]
-            dataframe_final = dataframe_copy_select[dataframe_copy_select['lon'].str.startswith(tuple(str(val) for val in range(10)))]
+            dataframe_copy_select = dataframe_copy[dataframe_copy['lat'].str.startswith(lat_lon_start_tuple)]
+            dataframe_final = dataframe_copy_select[dataframe_copy_select['lon'].str.startswith(
+                lat_lon_start_tuple)].copy()
             dataframe_final['lat'] = dataframe_final['lat'].astype(np.float64)
             dataframe_final['lon'] = dataframe_final['lon'].astype(np.float64)
         else:
@@ -432,8 +438,9 @@ class CountTweets(object):
             dataframe_copy = dataframe.copy()
             dataframe_copy['place_lat'] = dataframe['place_lat'].astype(str)
             dataframe_copy['place_lon'] = dataframe['place_lon'].astype(str)
-            dataframe_copy_select = dataframe_copy[dataframe_copy['place_lat'].str.startswith(tuple(str(val) for val in range(10)))]
-            dataframe_final = dataframe_copy_select[dataframe_copy_select['place_lon'].str.startswith(tuple(str(val) for val in range(10)))]
+            dataframe_copy_select = dataframe_copy[dataframe_copy['place_lat'].str.startswith(lat_lon_start_tuple)]
+            dataframe_final = dataframe_copy_select[dataframe_copy_select['place_lon'].str.startswith(
+                lat_lon_start_tuple)].copy()
             dataframe_final['place_lat'] = dataframe_final['place_lat'].astype(np.float64)
             dataframe_final['place_lon'] = dataframe_final['place_lon'].astype(np.float64)
         else:
@@ -557,8 +564,8 @@ class CountTweetsOpenSpace(object):
                 combined_result_dataframe.to_csv(os.path.join(self.save_loc, self.city_name,
                                                               self.save_filename), encoding='utf-8')
         return combined_result_dataframe
-    
-    
+
+
 def main_count_tweets(count_in_utc: bool = True):
     """
     Main function to count the tweets in both the city and the open space
@@ -567,12 +574,12 @@ def main_count_tweets(count_in_utc: bool = True):
     """
     for city in cities_dict_foreign:
         print("Coping with the city: {}".format(city))
-        
+
         if count_in_utc:
             timezone = pytz.utc
         else:
             timezone = cities_dict_foreign[city][1]
-        
+
         # Count the tweets posted within the city
         count_obj = CountTweets(city_name=city, city_profile_dict=cities_dict_foreign,
                                 start_time=datetime(2016, 5, 1, tzinfo=timezone),
@@ -610,7 +617,7 @@ def main_count_tweets(count_in_utc: bool = True):
             weekday_title='Number of Tweets Posted in {} Open Space on Each Weekday'.format(city),
             day_filename='{}_open_space_day.png'.format(city), hour_filename='{}_open_space_hour.png'.format(city),
             weekday_filename='{}_open_space_weekday.png'.format(city))
-        
+
         # Combine the result and save
         count_final = pd.merge(left=geocoded_count_dataframe, right=combined_open_space_dataframe,
                                on=['year', 'month', 'day', 'hour', 'weekday'])
@@ -634,5 +641,5 @@ def main_count_tweets(count_in_utc: bool = True):
 
 
 if __name__ == '__main__':
-    
+
     main_count_tweets(count_in_utc=True)
