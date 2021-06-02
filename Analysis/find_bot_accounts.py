@@ -83,6 +83,30 @@ def count_user_tweet(dataframe):
     return count_data_final
 
 
+def get_bot_users(count_dataframe, save_path, save_filename):
+    """
+    Get the user ids that are bot accounts. Some works for reference:
+    https://www.mdpi.com/2078-2489/9/5/102/htm
+    https://www.sciencedirect.com/science/article/pii/S0001457517302269
+    :param count_dataframe: the pandas dataframe counting the tweet count and loc percent
+    :param save_path: the path to the save the bot user ids
+    :param save_filename: the name of the saved file
+    :return: None. The bot ids are saved to the local directory
+    """
+    assert 'count' in count_dataframe, 'The count dataframe should have a column named count'
+    assert 'loc_percent' in count_dataframe, 'The count dataframe should have a column named loc_percent'
+
+    tweet_count_mean = np.mean(count_dataframe['count'])
+    tweet_count_std = np.std(count_dataframe['count'])
+    threshold = tweet_count_mean + 2 * tweet_count_std
+    decision = (count_dataframe['count'] > threshold) & (count_dataframe['loc_percent'] > 0.6)
+    bot_count_dataframe = count_dataframe[decision]
+    bot_ids = np.array(list(set(bot_count_dataframe['user_id'])))
+    print('We have got {} bots'.format(len(bot_ids)))
+    print('They posted {} tweets'.format(sum(bot_count_dataframe['count'])))
+    np.save(os.path.join(save_path, save_filename), bot_ids)
+
+
 def plot_tweet_count_dist(count_dataframe, percentile: float):
     """
     Plot the histogram of the number of tweets posted by users
@@ -106,12 +130,3 @@ def plot_tweet_count_dist(count_dataframe, percentile: float):
     plt.show()
 
 
-if __name__ == '__main__':
-    processed_cities = {}
-    for city in cities_dict_foreign:
-        if city not in processed_cities:
-            get_all_geocoded_tweets_in_city(city_name=city,
-                                            saving_path=cities_dict_foreign[city][2],
-                                            save_filename='{}_geocoded_tweets.csv'.format(city))
-        else:
-            print('The city {} has been processed.'.format(city))
