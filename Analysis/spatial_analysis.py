@@ -2,7 +2,17 @@ import os
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from cities_bounds import cities_dict_foreign, cities_dict_china, open_space_saving_path
+from cities_bounds import cities_dict_foreign, open_space_saving_path
+from utils import column_dtype_dict
+
+# Cope with some bad latitude and longitude data
+lat_lon_start_tuple = tuple([str(val) for val in range(10)] + ['-'])
+print(lat_lon_start_tuple)
+
+# Used colnames and datatypes for tweets
+considered_colnames = list(column_dtype_dict.keys())
+dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
+              'created_at': str, 'verified': bool, 'lang': str}
 
 
 class FindTweetsOpenSpace(object):
@@ -31,9 +41,9 @@ class FindTweetsOpenSpace(object):
             dataframe_copy['lat'] = dataframe_copy['lat'].astype(str)
             dataframe_copy['lon'] = dataframe_copy['lon'].astype(str)
             dataframe_copy_select = dataframe_copy[
-                dataframe_copy['lat'].str.startswith(tuple(str(val) for val in range(10)))]
+                dataframe_copy['lat'].str.startswith(lat_lon_start_tuple)]
             dataframe_final = dataframe_copy_select[
-                dataframe_copy_select['lon'].str.startswith(tuple(str(val) for val in range(10)))]
+                dataframe_copy_select['lon'].str.startswith(lat_lon_start_tuple)]
             dataframe_final['lat'] = dataframe_final['lat'].astype(np.float64)
             dataframe_final['lon'] = dataframe_final['lon'].astype(np.float64)
         else:
@@ -60,9 +70,9 @@ class FindTweetsOpenSpace(object):
             dataframe_copy['lat'] = dataframe_copy['lat'].astype(str)
             dataframe_copy['lon'] = dataframe_copy['lon'].astype(str)
             dataframe_copy_select = dataframe_copy[
-                dataframe_copy['lat'].str.startswith(tuple(str(val) for val in range(10)))]
+                dataframe_copy['lat'].str.startswith(lat_lon_start_tuple)]
             dataframe_final = dataframe_copy_select[
-                dataframe_copy_select['lon'].str.startswith(tuple(str(val) for val in range(10)))]
+                dataframe_copy_select['lon'].str.startswith(lat_lon_start_tuple)]
             dataframe_final['lat'] = dataframe_final['lat'].astype(np.float64)
             dataframe_final['lon'] = dataframe_final['lon'].astype(np.float64)
         else:
@@ -93,9 +103,9 @@ class FindTweetsOpenSpace(object):
             dataframe_copy['place_lat'] = dataframe['place_lat'].astype(str)
             dataframe_copy['place_lon'] = dataframe['place_lon'].astype(str)
             dataframe_copy_select = dataframe_copy[
-                dataframe_copy['place_lat'].str.startswith(tuple(str(val) for val in range(10)))]
+                dataframe_copy['place_lat'].str.startswith(lat_lon_start_tuple)]
             dataframe_final = dataframe_copy_select[
-                dataframe_copy_select['place_lon'].str.startswith(tuple(str(val) for val in range(10)))]
+                dataframe_copy_select['place_lon'].str.startswith(lat_lon_start_tuple)]
             dataframe_final['place_lat'] = dataframe_final['place_lat'].astype(np.float64)
             dataframe_final['place_lon'] = dataframe_final['place_lon'].astype(np.float64)
         else:
@@ -134,7 +144,7 @@ def main_foreign(considered_cities_set: set, cities_profile: dict, save_threshol
                     for file in os.listdir(csv_path):
                         try:
                             data = pd.read_csv(open(os.path.join(csv_path, file), encoding='utf-8', errors='ignore'),
-                                               index_col=0)
+                                               index_col=0, usecols=considered_colnames, dtype=dtype_dict)
                             geocoded_data = data.loc[~data['lat'].isna()]
                             geocoded_final = FindTweetsOpenSpace.preprocess_geoinfo(geocoded_data)
                             geocoded_tweet_gdf = gpd.GeoDataFrame(geocoded_final,
@@ -266,5 +276,6 @@ def main_china(considered_cities_set: set, cities_profile: dict, save_threshold:
 
 if __name__ == '__main__':
     # Find the Weibos posted in Chinese cities' open space
-    main_foreign(considered_cities_set={'singapore'}, cities_profile=cities_dict_foreign,
+    considered_cities_set = set(cities_dict_foreign.keys())
+    main_foreign(considered_cities_set=considered_cities_set, cities_profile=cities_dict_foreign,
                  save_threshold=50000, open_space_save_path=open_space_saving_path)
