@@ -93,6 +93,36 @@ shenyang_timezone, shenyang_loc = pytz.timezone('Asia/Shanghai'), os.path.join(h
 shenzhen_timezone, shenzhen_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Shenzhen')
 zhengzhou_timezone, zhengzhou_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Zhengzhou')
 
+# Load the bot ids in each city
+atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
+boston_bot_ids = None
+bangkok_bot_ids = None
+chicago_bot_ids = None
+hong_kong_bot_ids = None
+jakarta_bot_ids = None
+dhaka_bot_ids = None
+kuala_lumpur_bot_ids = None
+los_angeles_bot_ids = None
+london_bot_ids = None
+madrid_bot_ids = None
+johannesburg_bot_ids = None
+saopaulo_bot_ids = None
+melbourne_bot_ids = None
+auckland_bot_ids = None
+wales_bot_ids = None
+netherland_bot_ids = None
+new_york_bot_ids = np.load(os.path.join(new_york_loc, 'bot_ids.npy'), allow_pickle=True).item()
+paris_bot_ids = None
+vancouver_bot_ids = None
+riyadh_bot_ids = None
+mumbai_bot_ids = None
+san_francisco_bot_ids = None
+singapore_bot_ids = None
+taipei_bot_ids = None
+tokyo_bot_ids = None
+tricity_bot_ids = None
+
+
 # the location to the open space shapefiles for foreign cities
 atlanta_area = os.path.join(atlanta_loc, 'shapefiles', 'Atlanta_GreenSpace.shp')
 boston_area = os.path.join(boston_loc, 'shapefiles', 'Boston_OpenspaceUpdate.shp')
@@ -136,34 +166,38 @@ zhengzhou_area = os.path.join(zhengzhou_loc, 'shapefiles', 'zhengzhou_greenspace
 
 # final cities dicts: Use this dictionary in a loop
 # [bounding box info, timezone info, location of tweets, loc of the data of this city, path to open space shapefile]
+# To be updated: add the bot ids
 cities_dict_foreign = {
-    'san_francisco': [san_francisco_box, san_francisco_timezone, san_francisco_loc, san_francisco_area],
-    'new_york': [new_york_box, new_york_timezone, new_york_loc, new_york_area],
-    'los_angeles': [los_angeles_box, los_angeles_timezone, los_angeles_loc, los_angeles_area],
-    'chicago': [chicago_box, chicago_timezone, chicago_loc, chicago_area],
-    'atlanta': [atlanta_box, atlanta_timezone, atlanta_loc, atlanta_area],
-    'boston': [boston_box, boston_timezone, boston_loc, boston_area],
-    'london': [london_box, london_timezone, london_loc, london_area],
-    'netherlands': [netherland_box, netherland_timezone, netherland_loc, netherland_area],
-    'hong_kong': [hong_kong_box, hong_kong_timezone, hong_kong_loc, hong_kong_area],
-    'bangkok': [bangkok_box, bangkok_timezone, bangkok_loc, bangkok_area],
-    'tokyo': [tokyo_box, tokyo_timezone, tokyo_loc, tokyo_area],
-    'singapore': [singapore_box, singapore_timezone, singapore_loc, singapore_area],
-    'riyadh': [riyadh_box, riyadh_timezone, riyadh_loc, riyadh_area],
-    'mumbai': [mumbai_box, mumbai_timezone, mumbai_loc, mumbai_area],
-    'jakarta': [jakarta_box, jakarta_timezone, jakarta_loc, jakarta_area],
-    'dhaka': [dhaka_box, dhaka_timezone, dhaka_loc, dhaka_area],
-    'kuala_lumper': [kuala_lumpur_box, kuala_lumpur_timezone, kuala_lumpur_loc, kuala_lumpur_area],
-    'melbourne': [melbourne_box, melbourne_timezone, melbourne_loc, melbourne_area],
-    'auckland': [auckland_box, auckland_timezone, auckland_loc, auckland_area],
-    'wales': [wales_box, wales_timezone, wales_loc, wales_area],
-    'taipei': [taipei_box, taipei_timezone, taipei_loc, taipei_area],
-    'tricity': [tricity_box, tricity_timezone, tricity_loc, tricity_area],
-    'paris': [paris_box, paris_timezone, paris_loc, paris_area],
-    'vancouver': [vancouver_box, vancouver_timezone, vancouver_loc, vancouver_area],
-    'madrid': [madrid_box, madrid_timezone, madrid_loc, madrid_area],
-    'johannesburg': [johannesburg_box, johannesburg_timezone, johannesburg_loc, johannesburg_area],
-    'sao_paulo': [saopaulo_box, saopaulo_timezone, saopaulo_loc, saopaulo_area]}
+    'san_francisco': [san_francisco_box, san_francisco_timezone, san_francisco_loc, san_francisco_area,
+                      san_francisco_bot_ids],
+    'new_york': [new_york_box, new_york_timezone, new_york_loc, new_york_area, new_york_bot_ids],
+    'los_angeles': [los_angeles_box, los_angeles_timezone, los_angeles_loc, los_angeles_area, los_angeles_bot_ids],
+    'chicago': [chicago_box, chicago_timezone, chicago_loc, chicago_area, chicago_bot_ids],
+    'atlanta': [atlanta_box, atlanta_timezone, atlanta_loc, atlanta_area, atlanta_bot_ids],
+    'boston': [boston_box, boston_timezone, boston_loc, boston_area, boston_bot_ids],
+    'london': [london_box, london_timezone, london_loc, london_area, london_bot_ids],
+    'netherlands': [netherland_box, netherland_timezone, netherland_loc, netherland_area, netherland_bot_ids],
+    'hong_kong': [hong_kong_box, hong_kong_timezone, hong_kong_loc, hong_kong_area, hong_kong_bot_ids],
+    'bangkok': [bangkok_box, bangkok_timezone, bangkok_loc, bangkok_area, bangkok_bot_ids],
+    'tokyo': [tokyo_box, tokyo_timezone, tokyo_loc, tokyo_area, tokyo_bot_ids],
+    'singapore': [singapore_box, singapore_timezone, singapore_loc, singapore_area, singapore_bot_ids],
+    'riyadh': [riyadh_box, riyadh_timezone, riyadh_loc, riyadh_area, riyadh_bot_ids],
+    'mumbai': [mumbai_box, mumbai_timezone, mumbai_loc, mumbai_area, mumbai_bot_ids],
+    'jakarta': [jakarta_box, jakarta_timezone, jakarta_loc, jakarta_area, jakarta_bot_ids],
+    'dhaka': [dhaka_box, dhaka_timezone, dhaka_loc, dhaka_area, dhaka_bot_ids],
+    'kuala_lumper': [kuala_lumpur_box, kuala_lumpur_timezone, kuala_lumpur_loc, kuala_lumpur_area,
+                     kuala_lumpur_bot_ids],
+    'melbourne': [melbourne_box, melbourne_timezone, melbourne_loc, melbourne_area, melbourne_bot_ids],
+    'auckland': [auckland_box, auckland_timezone, auckland_loc, auckland_area, auckland_bot_ids],
+    'wales': [wales_box, wales_timezone, wales_loc, wales_area, wales_bot_ids],
+    'taipei': [taipei_box, taipei_timezone, taipei_loc, taipei_area, taipei_bot_ids],
+    'tricity': [tricity_box, tricity_timezone, tricity_loc, tricity_area, tricity_bot_ids],
+    'paris': [paris_box, paris_timezone, paris_loc, paris_area, paris_bot_ids],
+    'vancouver': [vancouver_box, vancouver_timezone, vancouver_loc, vancouver_area, vancouver_bot_ids],
+    'madrid': [madrid_box, madrid_timezone, madrid_loc, madrid_area, madrid_bot_ids],
+    'johannesburg': [johannesburg_box, johannesburg_timezone, johannesburg_loc, johannesburg_area,
+                     johannesburg_bot_ids],
+    'sao_paulo': [saopaulo_box, saopaulo_timezone, saopaulo_loc, saopaulo_area, saopaulo_bot_ids]}
 
 cities_dict_china = {
     'beijing': [beijing_box, beijing_timezone, beijing_loc, beijing_area],
