@@ -47,9 +47,10 @@ The following packages should be considered before managing this project:
 
 - Python 3.7 or later
 - R 3.4.1 or later
-- Spatial data analysis: [geopandas](https://geopandas.org/)
+- Spatial data analysis: [geopandas](https://geopandas.org/), [ArcGIS](https://www.arcgis.com/index.html), [QGIS](https://qgis.org/en/site/)
   - The installation process for geopandas on windows is quite complicated, especially with pip. Please check [this stackoverflow post](https://stackoverflow.com/questions/56958421/pip-install-geopandas-on-windows) for more information.
 - Data frame and computation: [numpy](https://numpy.org/) and [pandas](https://pandas.pydata.org/)
+- Cope with time: [datetime](https://docs.python.org/3/library/datetime.html) and [pytz](https://pypi.org/project/pytz/). A list of [pytz](https://pypi.org/project/pytz/) time zone is given [here](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)
 - Visualizations: [matplotlib](https://matplotlib.org/stable/index.html)
 
 
