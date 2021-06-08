@@ -39,7 +39,7 @@ def get_time_attributes(dataframe: pd.DataFrame, datetime_obj_colname: str):
     Get the time attributes based on the time object saved in dataframe
     :param dataframe: a pandas dataframe saving the tweets
     :param datetime_obj_colname: the colname of the tweet dataframe saving the time object
-    :return: a dataframe with time attributes for each tweet, including year, month, day, weekday, and hour
+    :return: a dataframe with time attributes for each tweet, including year, month, day, weekday, hour, minute, and second
     """
     dataframe_copy = dataframe.copy()
     dataframe_copy['year'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].year, axis=1)
