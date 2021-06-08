@@ -32,6 +32,39 @@ def transform_string_time_to_datetime(time_string, target_time_zone, convert_utc
     else:
         final_time_object = datetime_object.astimezone(target_time_zone)
     return final_time_object
+	
+	
+def get_time_attributes(dataframe: pd.DataFrame, datetime_obj_colname: str):
+    """
+    Get the time attributes based on the time object saved in dataframe
+    :param dataframe: a pandas dataframe saving the tweets
+    :param datetime_obj_colname: the colname of the tweet dataframe saving the time object
+    :return: a dataframe with time attributes for each tweet, including year, month, day, weekday, and hour
+    """
+    dataframe_copy = dataframe.copy()
+    dataframe_copy['year'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].year, axis=1)
+    dataframe_copy['month'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].month, axis=1)
+    dataframe_copy['day'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].day, axis=1)
+    dataframe_copy['weekday'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].weekday(), axis=1)
+    dataframe_copy['hour'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].hour, axis=1)
+    dataframe_copy['minute'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].minute, axis=1)
+    dataframe_copy['second'] = dataframe_copy.apply(lambda row: row[datetime_obj_colname].second, axis=1)
+    return dataframe_copy
+
+
+def read_csv_columns(path: str, filename: str, dtype_convert_dict: dict):
+    """
+    Load a csv file saved locally considering only specific columns.
+    This function will only consider the columns saved as the keys of dtype_convert_dict
+    :param path: the path for the csv file
+    :param filename: the name of the csv file
+    :param dtype_convert_dict: datatype convert dict
+    :return: a pandas dataframe
+    """
+    considered_columns = list(dtype_convert_dict.keys())
+    dataframe = pd.read_csv(os.path.join(path, filename), usecols=considered_columns, dtype=dtype_convert_dict,
+                            encoding='utf-8')
+    return dataframe
 
 
 def convert_dtypes_dataframe(dataframe: pd.DataFrame, convert_dict: dict) -> pd.DataFrame:
