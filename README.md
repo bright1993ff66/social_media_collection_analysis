@@ -52,8 +52,11 @@ The following packages should be considered before managing this project:
 
 - Python 3.7 or later
 - R 3.4.1 or later
-- Spatial data analysis: [geopandas](https://geopandas.org/), [ArcGIS](https://www.arcgis.com/index.html), [QGIS](https://qgis.org/en/site/)
-  - The installation process for geopandas on windows is quite complicated, especially with pip. Please check [this stackoverflow post](https://stackoverflow.com/questions/56958421/pip-install-geopandas-on-windows) for more information.
+- Spatial data analysis: [geopandas](https://geopandas.org/), [rasterio](https://rasterio.readthedocs.io/en/latest/), [pyproj](https://pyproj4.github.io/pyproj/stable/), [ArcGIS](https://www.arcgis.com/index.html), [QGIS](https://qgis.org/en/site/)
+  - The installation process for [geopandas](https://geopandas.org/) on windows is quite complicated, especially with pip. Please check [this stackoverflow post](https://stackoverflow.com/questions/56958421/pip-install-geopandas-on-windows) for more information.
+  - The [rasterio](https://rasterio.readthedocs.io/en/latest/) package conducts computation for the raster data.
+  - The [pyproj](https://pyproj4.github.io/pyproj/stable/) is used for coordinate transformation.
+  - [ArcGIS](https://www.arcgis.com/index.html) and [QGIS](https://qgis.org/en/site/) can be used for map editing and simple spatial data analysis.
 - Data frame and computation: [numpy](https://numpy.org/) and [pandas](https://pandas.pydata.org/)
 - Cope with time: [datetime](https://docs.python.org/3/library/datetime.html) and [pytz](https://pypi.org/project/pytz/). A list of [pytz](https://pypi.org/project/pytz/) time zone is given [here](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)
 - Visualizations: [matplotlib](https://matplotlib.org/stable/index.html)
