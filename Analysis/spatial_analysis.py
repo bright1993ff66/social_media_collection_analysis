@@ -9,7 +9,7 @@ from utils import column_dtype_dict
 lat_lon_start_tuple = tuple([str(val) for val in range(10)] + ['-'])
 print(lat_lon_start_tuple)
 
-# Used colnames and datatypes for tweets
+# Used column names and data types for tweets
 considered_colnames = list(column_dtype_dict.keys())
 dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
               'created_at': str, 'verified': bool, 'lang': str}
@@ -19,10 +19,15 @@ class FindTweetsOpenSpace(object):
     considered_years = [str(year) for year in range(2016, 2021, 1)]
 
     def __init__(self, open_space_data: gpd.geodataframe, tweet_data: gpd.geodataframe):
+        """
+        Initialize the object
+        :param open_space_data: the shapefile of the open space of a city 
+        :param tweet_data: the tweet pandas dataframe having laitutde and longitude information
+        """
         self.open_space = open_space_data
         self.tweets = tweet_data
 
-        # Check the coordinate systems are same
+        # Make sure the coordinate systems are same
         assert self.open_space.crs.srs == self.tweets.crs.srs, 'The coordinate systems do not match!'
 
     def find_tweets_in_open_space(self):
@@ -35,7 +40,12 @@ class FindTweetsOpenSpace(object):
         return joined_data_final
 
     @staticmethod
-    def preprocess_geoinfo(dataframe: pd.DataFrame):
+    def preprocess_geoinfo(dataframe: pd.DataFrame) -> pd.DataFrame:
+        """
+        Some geo-information is not saved correctly. Preprocess the geo-information
+        :param dataframe: a pandas dataframe saving the geocoded tweets
+        :return: a pandas dataframe with correct location information
+        """
         if (dataframe['lat'].dtype.name != 'float64') or (dataframe['lon'].dtype.name != 'float64'):
             dataframe_copy = dataframe.copy()
             dataframe_copy['lat'] = dataframe_copy['lat'].astype(str)
@@ -51,18 +61,16 @@ class FindTweetsOpenSpace(object):
         return dataframe_final
 
     @staticmethod
-    def find_tweet_in_box(dataframe, bounding_box_vals):
+    def find_tweet_in_box(dataframe, bounding_box_values) -> pd.DataFrame:
         """
         Find the geocoded tweets posted in one city
         Args:
             dataframe: a tweet pandas dataframe
-            bounding_box_vals: the bounding box of the studied city
-
+            bounding_box_values: the bounding box of the studied city
         Returns:
-
         """
-        lat_min, lat_max = bounding_box_vals[1], bounding_box_vals[3]
-        lon_min, lon_max = bounding_box_vals[0], bounding_box_vals[2]
+        lat_min, lat_max = bounding_box_values[1], bounding_box_values[3]
+        lon_min, lon_max = bounding_box_values[0], bounding_box_values[2]
         # Cope with some bad rows where the geoinformation is stored as a strange string
         if (dataframe['lat'].dtype.name != 'float64') or (dataframe['lon'].dtype.name != 'float64'):
             print('The geoinformation of this dataframe is not saved correctly')
@@ -84,18 +92,16 @@ class FindTweetsOpenSpace(object):
         return data_in_city
 
     @staticmethod
-    def find_tweet_place_in_box(dataframe, bounding_box_vals):
+    def find_tweet_place_in_box(dataframe, bounding_box_values):
         """
         Find the tweets in the city based on the 'place_lat' and 'place_lon' columns
         Args:
             dataframe: a tweet pandas dataframe
-            bounding_box_vals: the bounding box of the studied city
-
+            bounding_box_values: the bounding box of the studied city
         Returns:
-
         """
-        lat_min, lat_max = bounding_box_vals[1], bounding_box_vals[3]
-        lon_min, lon_max = bounding_box_vals[0], bounding_box_vals[2]
+        lat_min, lat_max = bounding_box_values[1], bounding_box_values[3]
+        lon_min, lon_max = bounding_box_values[0], bounding_box_values[2]
         # Cope with some bad rows where the geoinformation is stored as a strange string
         if (dataframe['place_lat'].dtype.name != 'float64') or (dataframe['place_lon'].dtype.name != 'float64'):
             print('The geoinformation of this dataframe is not saved correctly')
@@ -117,10 +123,10 @@ class FindTweetsOpenSpace(object):
         return data_in_city
 
 
-def main_foreign(considered_cities_set: set, cities_profile: dict, save_threshold: int, open_space_save_path: str):
+def main_foreign(considered_cities: set, cities_profile: dict, save_threshold: int, open_space_save_path: str):
     """
     The main function to find the tweets posted in open space of foreign cities
-    :param considered_cities_set: a python set saving the name of the cities you want to process
+    :param considered_cities: a python set saving the name of the cities you want to process
     :param cities_profile: a python dictionary saving the bounding box, timezone, tweet data location,
     and open space shapefile
     :param save_threshold: a threshold that let the program save the tweets posted in open space
@@ -130,7 +136,7 @@ def main_foreign(considered_cities_set: set, cities_profile: dict, save_threshol
     consider_years = [str(year) for year in [2016, 2017, 2018, 2019, 2020, 2021]]
     for studied_city in cities_profile:
         print('Coping with the city: {}'.format(studied_city))
-        if studied_city in considered_cities_set:
+        if studied_city in considered_cities:
             tweet_num_counter, file_counter = 0, 0
             print('Load the open space data...')
             open_space = gpd.read_file(cities_profile[studied_city][3])
@@ -198,10 +204,10 @@ def main_foreign(considered_cities_set: set, cities_profile: dict, save_threshol
                     encoding='utf-8')
 
 
-def main_china(considered_cities_set: set, cities_profile: dict, save_threshold: int, open_space_save_path: str):
+def main_china(considered_cities: set, cities_profile: dict, save_threshold: int, open_space_save_path: str):
     """
     The main function to find the Weibos posted in open space of Chinese cities
-    :param considered_cities_set: a python set saving the name of the cities you want to process
+    :param considered_cities: a python set saving the name of the cities you want to process
     :param cities_profile: a python dictionary saving the bounding box, timezone, tweet data location,
     and open space shapefile
     :param save_threshold: a threshold that let the program save the tweets posted in open space
@@ -210,7 +216,7 @@ def main_china(considered_cities_set: set, cities_profile: dict, save_threshold:
     """
     for studied_city in cities_profile:
         print('Coping with the city: {}'.format(studied_city))
-        if studied_city in considered_cities_set:
+        if studied_city in considered_cities:
             weibo_num_counter, file_counter = 0, 0
             print('Load the open space data...')
             open_space = gpd.read_file(cities_profile[studied_city][3])
@@ -277,5 +283,5 @@ def main_china(considered_cities_set: set, cities_profile: dict, save_threshold:
 if __name__ == '__main__':
     # Find the Weibos posted in Chinese cities' open space
     considered_cities_set = set(cities_dict_foreign.keys())
-    main_foreign(considered_cities_set=considered_cities_set, cities_profile=cities_dict_foreign,
-                 save_threshold=50000, open_space_save_path=open_space_saving_path)
+    main_foreign(considered_cities=considered_cities_set, cities_profile=cities_dict_foreign,
+                 save_threshold=30000, open_space_save_path=open_space_saving_path)
