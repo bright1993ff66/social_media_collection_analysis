@@ -14,7 +14,7 @@ from count_tweets import CountTweets
 from cities_bounds import cities_dict_foreign
 
 
-def get_all_geocoded_tweets_in_city(city_name, saving_path, save_filename):
+def get_all_geocoded_tweets_in_city(city_name: str, saving_path: str, save_filename: str):
     """
     Get all the geocoded tweets posted in a city
     :param city_name: the name of a city
@@ -28,14 +28,15 @@ def get_all_geocoded_tweets_in_city(city_name, saving_path, save_filename):
                                  end_time=datetime(2020, 12, 31, tzinfo=pytz.utc),
                                  utc_or_not=True)
     dataframe_list = []
-    for year in city_tweet_obj.considered_year_list:
-        print('Coping with the year: {}'.format(year))
-        csv_path = os.path.join(city_tweet_obj.city_loc, year)
+    for considered_year in city_tweet_obj.considered_year_list:
+        print('Coping with the year: {}'.format(considered_year))
+        csv_path = os.path.join(city_tweet_obj.city_loc, considered_year)
         try:
-            for csv_file in os.listdir(csv_path):
-                print('Coping with the file: {}'.format(csv_file))
+            for csv_file_name in os.listdir(csv_path):
+                print('Coping with the file: {}'.format(csv_file_name))
                 try:
-                    dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file), encoding='utf-8', errors='ignore'),
+                    dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file_name), 
+                                                 encoding='utf-8', errors='ignore'),
                                             usecols=['user_id_str', 'id_str', 'lat', 'lon'],
                                             dtype={'user_id_str': str, 'id_str': str})
                     geocoded_dataframe = dataframe.loc[~dataframe['lat'].isnull()]
@@ -44,22 +45,22 @@ def get_all_geocoded_tweets_in_city(city_name, saving_path, save_filename):
                         geocoded_without_duplicates, bounding_box_vals=city_tweet_obj.city_bounding_box)
                     dataframe_list.append(geocoded_tweet_city)
                 except KeyError:
-                    print('The csv file: {} does not have any column names. Ignore'.format(csv_file))
+                    print('The csv file: {} does not have any column names. Ignore'.format(csv_file_name))
                 except ValueError:
-                    print('ValueError occurs for file: {}. Ignore.'.format(csv_file))
+                    print('ValueError occurs for file: {}. Ignore.'.format(csv_file_name))
                 except pd.errors.ParserError:
-                    print('Parser error occurred in file: {}. Ignore.'.format(csv_file))
-            print('The year: {} has been processed'.format(year))
+                    print('Parser error occurred in file: {}. Ignore.'.format(csv_file_name))
+            print('The year: {} has been processed'.format(considered_year))
             concat_geocoded_data = pd.concat(dataframe_list, axis=0)
-            concat_geocoded_data.to_csv(os.path.join(saving_path, year + save_filename), encoding='utf-8')
+            concat_geocoded_data.to_csv(os.path.join(saving_path, considered_year + save_filename), encoding='utf-8')
             # Release memory
             del concat_geocoded_data
             dataframe_list = []
         except FileNotFoundError:
-            print('There is no {} folder in local'.format(str(year)))
+            print('There is no {} folder in local'.format(str(considered_year)))
 
 
-def count_user_tweet(dataframe):
+def count_user_tweet(dataframe: pd.DataFrame):
     """
     Count the users and the number of tweets they post.
     Bot accounts are likely to post many tweets in a long time
@@ -69,12 +70,13 @@ def count_user_tweet(dataframe):
     user_set = set(dataframe['user_id_str'])
     user_list, tweet_count_list, tweet_pos_percent_list = [], [], []
     for user in user_set:
-        user_list.append(user)
         data_select = dataframe.loc[dataframe['user_id_str'] == user].copy()
-        data_select['pos'] = data_select.apply(lambda row: (row.lat, row.lon), axis=1)
-        _, most_common_count = Counter(data_select['pos']).most_common()[0]
-        tweet_count_list.append(data_select.shape[0])
-        tweet_pos_percent_list.append(most_common_count / len(set(data_select['id_str'])))
+        if data_select.shape[0] > 0:
+            user_list.append(user)
+            data_select['pos'] = data_select.apply(lambda row: (row.lat, row.lon), axis=1)
+            _, most_common_count = Counter(data_select['pos']).most_common()[0]
+            tweet_count_list.append(data_select.shape[0])
+            tweet_pos_percent_list.append(most_common_count / len(set(data_select['id_str'])))
     count_data = pd.DataFrame()
     count_data['user_id'] = user_list
     count_data['count'] = tweet_count_list
@@ -83,7 +85,7 @@ def count_user_tweet(dataframe):
     return count_data_final
 
 
-def get_bot_users(count_dataframe, save_path, save_filename):
+def get_bot_users(count_dataframe: pd.DataFrame, save_path: str, save_filename: str):
     """
     Get the user ids that are bot accounts. Some works for reference:
     https://www.mdpi.com/2078-2489/9/5/102/htm
@@ -107,7 +109,7 @@ def get_bot_users(count_dataframe, save_path, save_filename):
     np.save(os.path.join(save_path, save_filename), bot_ids)
 
 
-def plot_tweet_count_dist(count_dataframe, percentile: float):
+def plot_tweet_count_dist(count_dataframe: pd.DataFrame, percentile: float):
     """
     Plot the histogram of the number of tweets posted by users
     :param count_dataframe: a pandas dataframe saving the number of tweets posted by each user
@@ -128,5 +130,3 @@ def plot_tweet_count_dist(count_dataframe, percentile: float):
     axis.spines['top'].set_visible(False)
     axis.spines['right'].set_visible(False)
     plt.show()
-
-
