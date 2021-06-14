@@ -13,6 +13,8 @@ print(lat_lon_start_tuple)
 considered_colnames = list(column_dtype_dict.keys())
 dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
               'created_at': str, 'verified': bool, 'lang': str}
+print('The considered columns in the tweet dataframe: {}'.format(considered_colnames))
+print('The convert datatypes: {}'.format(dtype_dict))
 
 
 class FindTweetsOpenSpace(object):
@@ -21,8 +23,8 @@ class FindTweetsOpenSpace(object):
     def __init__(self, open_space_data: gpd.geodataframe, tweet_data: gpd.geodataframe):
         """
         Initialize the object
-        :param open_space_data: the shapefile of the open space of a city 
-        :param tweet_data: the tweet pandas dataframe having laitutde and longitude information
+        :param open_space_data: the shapefile of the open space of a city
+        :param tweet_data: the tweet pandas dataframe having latitude and longitude information
         """
         self.open_space = open_space_data
         self.tweets = tweet_data
