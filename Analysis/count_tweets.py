@@ -5,6 +5,7 @@ from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 import pytz
 import pandas as pd
+import geopandas as gpd
 
 import data_paths
 from cities_bounds import cities_dict_foreign, open_space_saving_path
@@ -20,6 +21,8 @@ print(lat_lon_start_tuple)
 considered_colnames = list(column_dtype_dict.keys())
 dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
               'created_at': str, 'verified': bool, 'lang': str}
+print('The considered columns in the tweet dataframe: {}'.format(considered_colnames))
+print('The convert datatypes: {}'.format(dtype_dict))
 
 
 class CountTweets(object):
@@ -36,6 +39,7 @@ class CountTweets(object):
         self.city_timezone = city_profile_dict[city_name][1]  # load the local timezone information
         self.city_loc = city_profile_dict[city_name][2]  # load the location of data
         self.bot_ids = city_profile_dict[city_name][4]  # load the detected bot ids
+        self.city_shapefile_loc = city_profile_dict[city_name][5]  # load the shapefile of the city
         self.count_in_utc = utc_or_not
         self.considered_year_list = ['2016', '2017', '2018', '2019', '2020']
         self.considered_quarter_list = ['Q1', 'Q2', 'Q3', 'Q4']
@@ -63,15 +67,14 @@ class CountTweets(object):
                                                      encoding='utf-8',
                                                      errors='ignore'),
                                                 usecols=considered_colnames,
-                                                dtype=dtype_dict, index_col=0)
+                                                dtype=dtype_dict)
                         # print(dataframe['lat'].dtype.name)
                         geocoded_dataframe = dataframe.loc[~dataframe['lat'].isnull()]
                         # print(geocoded_dataframe['lat'].dtype.name)
                         geocoded_without_duplicates = geocoded_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_tweet_city = CountTweets.find_tweet_in_city(
-                            geocoded_without_bot, bounding_box_vals=self.city_bounding_box)
+                        geocoded_tweet_city = self.find_tweet_in_city(dataframe=geocoded_without_bot)
 
                         # Process the dataframe with lat and lon
                         if geocoded_tweet_city.shape[0] == 0:
@@ -91,6 +94,7 @@ class CountTweets(object):
                                     row['clean_time'].month) + '_' + str(
                                     row['clean_time'].day) + '_' + str(
                                     row['clean_time'].hour) + '_' + str(row['clean_time'].weekday()), axis=1)
+
                             geocoded_tweet_counter = Counter(geocoded_tweet_city_copy['year_month_day_hour_weekday'])
                         considered_geocoded_time_count_dict = merge_dict(sum_dict=considered_geocoded_time_count_dict,
                                                                          a_dict=geocoded_tweet_counter)
@@ -131,14 +135,13 @@ class CountTweets(object):
                     print('Coping with the file: {}'.format(csv_file))
                     try:
                         dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file), encoding='utf-8',
-                                                     errors='ignore'), index_col=0,
-                                                usecols=considered_colnames, dtype=dtype_dict)
+                                                     errors='ignore'), usecols=considered_colnames,
+                                                dtype=dtype_dict)
                         geocoded_place_dataframe = dataframe.loc[~dataframe['place_lat'].isnull()]
                         geocoded_without_duplicates = geocoded_place_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_place_tweet_city = CountTweets.find_tweet_place_in_city(
-                            geocoded_without_bot, bounding_box_vals=self.city_bounding_box)
+                        geocoded_place_tweet_city = self.find_tweet_place_in_city(geocoded_without_bot)
 
                         # Process the dataframe with lat and lon
                         if geocoded_place_tweet_city.shape[0] == 0:
@@ -196,22 +199,20 @@ class CountTweets(object):
                     print('Coping with the file: {}'.format(csv_file))
                     try:
                         dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file), encoding='utf-8',
-                                                     errors='ignore'), index_col=0,
-                                                usecols=considered_colnames, dtype=dtype_dict)
+                                                     errors='ignore'), usecols=considered_colnames, dtype=dtype_dict)
                         geocoded_dataframe = dataframe.loc[~dataframe['lat'].isnull()]
                         geocoded_place_dataframe = dataframe.loc[~dataframe['place_lat'].isnull()]
 
                         geocoded_without_duplicates = geocoded_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_tweet_city = CountTweets.find_tweet_in_city(
-                            geocoded_without_bot, bounding_box_vals=self.city_bounding_box)
+                        geocoded_tweet_city = self.find_tweet_in_city(geocoded_without_bot)
 
                         geocoded_place_without_duplicates = geocoded_place_dataframe.drop_duplicates(
                             subset=['id_str'])
                         geocoded_place_without_bot = geocoded_place_without_duplicates.loc[
                             ~geocoded_place_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_place_tweet_city = CountTweets.find_tweet_place_in_city(
+                        geocoded_place_tweet_city = CountTweets.find_tweet_place_in_bounding_box(
                             geocoded_place_without_bot, bounding_box_vals=self.city_bounding_box)
 
                         # Process the dataframe with lat and lon
@@ -281,40 +282,6 @@ class CountTweets(object):
             count_dataframe.to_csv(os.path.join(self.saving_path_for_month, self.city_name + 'tweet_count.csv'),
                                    encoding='utf-8')
 
-    def count_tweets_quarterly(self):
-        """
-        Count the tweets quarterly based on the monthly count result
-        :return:
-        """
-        count_month_dataframe = pd.read_csv(
-            os.path.join(self.saving_path_for_month, self.city_name + '_tweet_count.csv'),
-            encoding='utf-8', index_col=0, usecols=considered_colnames, dtype=dtype_dict)
-        year_quarter_list = []
-        for year in self.considered_year_list:
-            for quarter in self.considered_quarter_list:
-                year_quarter_list.append(year + '_' + quarter)
-        count_quarter_geo_list, count_quarter_all_list = [], []
-        cur_geo_count, cur_all_count = 0, 0
-        for index, row in count_month_dataframe.iterrows():
-            cur_geo_count += row['geocoded_count']
-            cur_all_count += row['all_count']
-            if (index + 1) % 3 == 0:
-                count_quarter_geo_list.append(cur_geo_count)
-                count_quarter_all_list.append(cur_all_count)
-                cur_geo_count, cur_all_count = 0, 0
-        geo_quarter_dataframe = pd.DataFrame(columns=['time', 'count'])
-        geo_quarter_dataframe['time'] = year_quarter_list
-        geo_quarter_dataframe['count'] = count_quarter_geo_list
-        all_quarter_dataframe = pd.DataFrame(columns=['time', 'count'])
-        all_quarter_dataframe['time'] = year_quarter_list
-        all_quarter_dataframe['count'] = count_quarter_all_list
-        new_headers = geo_quarter_dataframe.T.iloc[0]
-        geo_quarter_transpose, all_quarter_transpose = geo_quarter_dataframe.T[1:], all_quarter_dataframe.T[1:]
-        geo_quarter_transpose.columns, all_quarter_transpose.columns = new_headers, new_headers
-        geo_quarter_transpose.index = [self.city_name]
-        all_quarter_transpose.index = [self.city_name]
-        return geo_quarter_transpose, all_quarter_transpose
-
     def get_tweets_from_id_set(self, tweet_id_set, save_path, save_filename):
         """
         Get the tweets by the tweet id(int64)
@@ -333,7 +300,7 @@ class CountTweets(object):
             csv_file_path = os.path.join(self.city_loc, year)
             for file in os.listdir(csv_file_path):
                 try:
-                    dataframe = pd.read_csv(os.path.join(csv_file_path, file), encoding='utf-8', index_col=0,
+                    dataframe = pd.read_csv(os.path.join(csv_file_path, file), encoding='utf-8',
                                             usecols=considered_colnames, dtype=dtype_dict)
                     assert dataframe['id_str'].dtype.name == 'int64', "The dtype of the column 'id_str' is not right!"
                     dataframe_select = dataframe.loc[dataframe['id_str'].isin(tweet_id_set)]
@@ -409,10 +376,38 @@ class CountTweets(object):
         result_dataframe['total_count'] = [0] * len(year_list)
         return result_dataframe
 
-    @staticmethod
-    def find_tweet_in_city(dataframe, bounding_box_vals):
+    def find_tweet_in_city(self, dataframe):
         """
-        Find the geocoded tweets posted in one city based on the 'lat' and 'lon' columns
+        Find the tweets posted in the city based on the 'lat' and 'lon' columns
+        :param dataframe: a pandas dataframe saving the geocoded tweets
+        :return: tweets posted in the city
+        """
+        if (dataframe['lat'].dtype.name != 'float64') or (dataframe['lon'].dtype.name != 'float64'):
+            print('Something wrong with the datatype of latitude and longitude...')
+            dataframe_copy = dataframe.copy()
+            dataframe_copy['lat'] = dataframe_copy['lat'].astype(str)
+            dataframe_copy['lon'] = dataframe_copy['lon'].astype(str)
+            dataframe_copy_select = dataframe_copy[dataframe_copy['lat'].str.startswith(
+                lat_lon_start_tuple)]
+            dataframe_final = dataframe_copy_select[dataframe_copy_select['lon'].str.startswith(
+                lat_lon_start_tuple)].copy()
+            dataframe_final['lat'] = dataframe_final['lat'].astype(np.float64)
+            dataframe_final['lon'] = dataframe_final['lon'].astype(np.float64)
+        else:
+            dataframe_final = dataframe.copy()
+        geocoded_tweet_gdf = gpd.GeoDataFrame(dataframe_final,
+                                              geometry=gpd.points_from_xy(dataframe_final.lon,
+                                                                          dataframe_final.lat))
+        geocoded_tweet_gdf = geocoded_tweet_gdf.set_crs(epsg=4326, inplace=True)
+        city_shape = gpd.read_file(self.city_shapefile_loc)
+        city_shape_4326 = city_shape.to_crs(epsg=4326)
+        joined_data_final = CountTweets.spatial_join(tweet_gdf=geocoded_tweet_gdf, shape_area=city_shape_4326)
+        return joined_data_final.reset_index(drop=True)
+
+    @staticmethod
+    def find_tweet_in_bounding_box(dataframe, bounding_box_vals):
+        """
+        Find the geocoded tweets posted in one city's bounding box based on the 'lat' and 'lon' columns
         Args:
             dataframe: a tweet pandas dataframe
             bounding_box_vals: the bounding box of the studied city
@@ -440,12 +435,40 @@ class CountTweets(object):
         decision2 = (dataframe_final['lon'] >= lon_min) & (dataframe_final['lon'] <= lon_max)
         data_in_city = dataframe_final[decision1 & decision2]
         assert type(data_in_city) == pd.DataFrame, 'The output type of dataframe is not right.'
-        return data_in_city
+        return data_in_city.reset_index(drop=True)
+
+    def find_tweet_place_in_city(self, dataframe):
+        """
+        Find the tweets posted in the city based on the 'place_lat' and 'place_lon' columns
+        :param dataframe: a pandas dataframe saving the geocoded tweets
+        :return: tweets posted in the city
+        """
+        if (dataframe['place_lat'].dtype.name != 'float64') or (dataframe['place_lon'].dtype.name != 'float64'):
+            print('Something wrong with the datatype of latitude and longitude...')
+            dataframe_copy = dataframe.copy()
+            dataframe_copy['place_lat'] = dataframe_copy['place_lat'].astype(str)
+            dataframe_copy['place_lon'] = dataframe_copy['place_lon'].astype(str)
+            dataframe_copy_select = dataframe_copy[dataframe_copy['place_lat'].str.startswith(
+                lat_lon_start_tuple)]
+            dataframe_final = dataframe_copy_select[dataframe_copy_select['place_lon'].str.startswith(
+                lat_lon_start_tuple)].copy()
+            dataframe_final['place_lat'] = dataframe_final['place_lat'].astype(np.float64)
+            dataframe_final['place_lon'] = dataframe_final['place_lon'].astype(np.float64)
+        else:
+            dataframe_final = dataframe.copy()
+        geocoded_tweet_gdf = gpd.GeoDataFrame(dataframe_final,
+                                              geometry=gpd.points_from_xy(dataframe_final.place_lon,
+                                                                          dataframe_final.place_lat))
+        geocoded_tweet_gdf = geocoded_tweet_gdf.set_crs(epsg=4326, inplace=True)
+        city_shape = gpd.read_file(self.city_shapefile_loc)
+        city_shape_4326 = city_shape.to_crs(epsg=4326)
+        joined_data_final = CountTweets.spatial_join(tweet_gdf=geocoded_tweet_gdf, shape_area=city_shape_4326)
+        return joined_data_final.reset_index(drop=True)
 
     @staticmethod
-    def find_tweet_place_in_city(dataframe, bounding_box_vals):
+    def find_tweet_place_in_bounding_box(dataframe, bounding_box_vals):
         """
-        Find the tweets in the city based on the 'place_lat' and 'place_lon' columns
+        Find the tweets in the city's bounding box based on the 'place_lat' and 'place_lon' columns
         Args:
             dataframe: a tweet pandas dataframe
             bounding_box_vals: the bounding box of the studied city
@@ -473,7 +496,18 @@ class CountTweets(object):
         decision2 = (dataframe_final['place_lon'] >= lon_min) & (dataframe_final['place_lon'] <= lon_max)
         data_in_city = dataframe_final[decision1 & decision2]
         assert type(data_in_city) == pd.DataFrame, 'The output type of dataframe is not right.'
-        return data_in_city
+        return data_in_city.reset_index(drop=True)
+
+    @staticmethod
+    def spatial_join(tweet_gdf, shape_area):
+        """
+        Find the tweets posted in one city's open space
+        :return: tweets posted in open space
+        """
+        assert tweet_gdf.crs == shape_area.crs, 'The coordinate systems do not match!'
+        joined_data = gpd.sjoin(left_df=tweet_gdf, right_df=shape_area, op='within')
+        joined_data_final = joined_data.drop_duplicates(subset=['id_str'])
+        return joined_data_final
 
 
 class CountTweetsOpenSpace(object):
@@ -511,7 +545,7 @@ class CountTweetsOpenSpace(object):
             cur_time = self.start_time
             if file.endswith('.csv'):
                 print('Analyzing the file {} saving the tweets posted in open space...'.format(file))
-                dataframe = pd.read_csv(os.path.join(self.data_loc, file), encoding='utf-8', index_col=0,
+                dataframe = pd.read_csv(os.path.join(self.data_loc, file), encoding='utf-8',
                                         usecols=considered_colnames, dtype=dtype_dict)
                 dataframe_without_bot = dataframe.loc[~dataframe['user_id_str'].isin(self.bot_ids)]
                 # Get the local time and year, month, day, hour attributes
@@ -675,6 +709,5 @@ def main_count_tweets(count_in_utc: bool = True, considered_city_names=None):
 
 
 if __name__ == '__main__':
-	# For instance
-    considered_cities = {'atlanta'}
+    considered_cities = {'kuala_lumper'}
     main_count_tweets(count_in_utc=True, considered_city_names=considered_cities)
