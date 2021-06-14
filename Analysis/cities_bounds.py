@@ -95,6 +95,35 @@ zhengzhou_timezone, zhengzhou_loc = pytz.timezone('Asia/Shanghai'), os.path.join
 
 # Load the bot ids in each city
 atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
+boston_bot_ids = np.load(os.path.join(boston_loc, 'boston_bot_ids.npy'), allow_pickle=True).item()
+bangkok_bot_ids = np.load(os.path.join(boston_loc, 'bangkok_bot_ids.npy'), allow_pickle=True).item()
+chicago_bot_ids = np.load(os.path.join(boston_loc, 'chicago_bot_ids.npy'), allow_pickle=True).item()
+hong_kong_bot_ids = np.load(os.path.join(boston_loc, 'hong_kong_bot_ids.npy'), allow_pickle=True).item()
+jakarta_bot_ids = np.load(os.path.join(boston_loc, 'jakarta_bot_ids.npy'), allow_pickle=True).item()
+dhaka_bot_ids = np.load(os.path.join(boston_loc, 'dhaka_bot_ids.npy'), allow_pickle=True).item()
+kuala_lumpur_bot_ids = np.load(os.path.join(boston_loc, 'kuala_lumper_bot_ids.npy'), allow_pickle=True).item()
+los_angeles_bot_ids = np.load(os.path.join(boston_loc, 'los_angeles_bot_ids.npy'), allow_pickle=True).item()
+london_bot_ids = np.load(os.path.join(boston_loc, 'london_bot_ids.npy'), allow_pickle=True).item()
+madrid_bot_ids = np.load(os.path.join(boston_loc, 'madrid_bot_ids.npy'), allow_pickle=True).item()
+johannesburg_bot_ids = np.load(os.path.join(boston_loc, 'johannesburg_bot_ids.npy'), allow_pickle=True).item()
+saopaulo_bot_ids = np.load(os.path.join(boston_loc, 'sao_paulo_bot_ids.npy'), allow_pickle=True).item()
+melbourne_bot_ids = np.load(os.path.join(boston_loc, 'melbourne_bot_ids.npy'), allow_pickle=True).item()
+auckland_bot_ids = np.load(os.path.join(boston_loc, 'auckland_bot_ids.npy'), allow_pickle=True).item()
+wales_bot_ids = np.load(os.path.join(boston_loc, 'wales_bot_ids.npy'), allow_pickle=True).item()
+netherlands_bot_ids = np.load(os.path.join(boston_loc, 'netherlands_bot_ids.npy'), allow_pickle=True).item()
+new_york_bot_ids = np.load(os.path.join(new_york_loc, 'new_york_bot_ids.npy'), allow_pickle=True).item()
+paris_bot_ids = np.load(os.path.join(boston_loc, 'paris_bot_ids.npy'), allow_pickle=True).item()
+vancouver_bot_ids = np.load(os.path.join(boston_loc, 'vancouver_bot_ids.npy'), allow_pickle=True).item()
+riyadh_bot_ids = np.load(os.path.join(boston_loc, 'riyadh_bot_ids.npy'), allow_pickle=True).item()
+mumbai_bot_ids = np.load(os.path.join(boston_loc, 'mumbai_bot_ids.npy'), allow_pickle=True).item()
+san_francisco_bot_ids = np.load(os.path.join(boston_loc, 'san_francisco_bot_ids.npy'), allow_pickle=True).item()
+singapore_bot_ids = np.load(os.path.join(boston_loc, 'singapore_bot_ids.npy'), allow_pickle=True).item()
+taipei_bot_ids = np.load(os.path.join(boston_loc, 'taipei_bot_ids.npy'), allow_pickle=True).item()
+tokyo_bot_ids = np.load(os.path.join(boston_loc, 'tokyo_bot_ids.npy'), allow_pickle=True).item()
+tricity_bot_ids = np.load(os.path.join(boston_loc, 'tricity_bot_ids.npy'), allow_pickle=True).item()
+
+# Load the bot ids in each city
+atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
 boston_bot_ids = None
 bangkok_bot_ids = None
 chicago_bot_ids = None
