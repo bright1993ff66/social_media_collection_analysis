@@ -96,31 +96,31 @@ zhengzhou_timezone, zhengzhou_loc = pytz.timezone('Asia/Shanghai'), os.path.join
 # Load the bot ids in each city
 atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
 boston_bot_ids = np.load(os.path.join(boston_loc, 'boston_bot_ids.npy'), allow_pickle=True).item()
-bangkok_bot_ids = np.load(os.path.join(boston_loc, 'bangkok_bot_ids.npy'), allow_pickle=True).item()
-chicago_bot_ids = np.load(os.path.join(boston_loc, 'chicago_bot_ids.npy'), allow_pickle=True).item()
-hong_kong_bot_ids = np.load(os.path.join(boston_loc, 'hong_kong_bot_ids.npy'), allow_pickle=True).item()
-jakarta_bot_ids = np.load(os.path.join(boston_loc, 'jakarta_bot_ids.npy'), allow_pickle=True).item()
-dhaka_bot_ids = np.load(os.path.join(boston_loc, 'dhaka_bot_ids.npy'), allow_pickle=True).item()
-kuala_lumpur_bot_ids = np.load(os.path.join(boston_loc, 'kuala_lumper_bot_ids.npy'), allow_pickle=True).item()
-los_angeles_bot_ids = np.load(os.path.join(boston_loc, 'los_angeles_bot_ids.npy'), allow_pickle=True).item()
-london_bot_ids = np.load(os.path.join(boston_loc, 'london_bot_ids.npy'), allow_pickle=True).item()
-madrid_bot_ids = np.load(os.path.join(boston_loc, 'madrid_bot_ids.npy'), allow_pickle=True).item()
-johannesburg_bot_ids = np.load(os.path.join(boston_loc, 'johannesburg_bot_ids.npy'), allow_pickle=True).item()
-saopaulo_bot_ids = np.load(os.path.join(boston_loc, 'sao_paulo_bot_ids.npy'), allow_pickle=True).item()
-melbourne_bot_ids = np.load(os.path.join(boston_loc, 'melbourne_bot_ids.npy'), allow_pickle=True).item()
-auckland_bot_ids = np.load(os.path.join(boston_loc, 'auckland_bot_ids.npy'), allow_pickle=True).item()
-wales_bot_ids = np.load(os.path.join(boston_loc, 'wales_bot_ids.npy'), allow_pickle=True).item()
-netherlands_bot_ids = np.load(os.path.join(boston_loc, 'netherlands_bot_ids.npy'), allow_pickle=True).item()
+bangkok_bot_ids = np.load(os.path.join(bangkok_loc, 'bangkok_bot_ids.npy'), allow_pickle=True).item()
+chicago_bot_ids = np.load(os.path.join(chicago_loc, 'chicago_bot_ids.npy'), allow_pickle=True).item()
+hong_kong_bot_ids = np.load(os.path.join(hong_kong_loc, 'hong_kong_bot_ids.npy'), allow_pickle=True).item()
+jakarta_bot_ids = np.load(os.path.join(jakarta_loc, 'jakarta_bot_ids.npy'), allow_pickle=True).item()
+dhaka_bot_ids = np.load(os.path.join(dhaka_loc, 'dhaka_bot_ids.npy'), allow_pickle=True).item()
+kuala_lumpur_bot_ids = np.load(os.path.join(kuala_lumpur_loc, 'kuala_lumper_bot_ids.npy'), allow_pickle=True).item()
+los_angeles_bot_ids = np.load(os.path.join(los_angeles_loc, 'los_angeles_bot_ids.npy'), allow_pickle=True).item()
+london_bot_ids = np.load(os.path.join(london_loc, 'london_bot_ids.npy'), allow_pickle=True).item()
+madrid_bot_ids = np.load(os.path.join(madrid_loc, 'madrid_bot_ids.npy'), allow_pickle=True).item()
+johannesburg_bot_ids = np.load(os.path.join(johannesburg_loc, 'johannesburg_bot_ids.npy'), allow_pickle=True).item()
+saopaulo_bot_ids = np.load(os.path.join(saopaulo_loc, 'sao_paulo_bot_ids.npy'), allow_pickle=True).item()
+melbourne_bot_ids = np.load(os.path.join(melbourne_loc, 'melbourne_bot_ids.npy'), allow_pickle=True).item()
+auckland_bot_ids = np.load(os.path.join(auckland_loc, 'auckland_bot_ids.npy'), allow_pickle=True).item()
+wales_bot_ids = np.load(os.path.join(wales_loc, 'wales_bot_ids.npy'), allow_pickle=True).item()
+netherlands_bot_ids = np.load(os.path.join(netherlands_loc, 'netherlands_bot_ids.npy'), allow_pickle=True).item()
 new_york_bot_ids = np.load(os.path.join(new_york_loc, 'new_york_bot_ids.npy'), allow_pickle=True).item()
-paris_bot_ids = np.load(os.path.join(boston_loc, 'paris_bot_ids.npy'), allow_pickle=True).item()
-vancouver_bot_ids = np.load(os.path.join(boston_loc, 'vancouver_bot_ids.npy'), allow_pickle=True).item()
-riyadh_bot_ids = np.load(os.path.join(boston_loc, 'riyadh_bot_ids.npy'), allow_pickle=True).item()
-mumbai_bot_ids = np.load(os.path.join(boston_loc, 'mumbai_bot_ids.npy'), allow_pickle=True).item()
-san_francisco_bot_ids = np.load(os.path.join(boston_loc, 'san_francisco_bot_ids.npy'), allow_pickle=True).item()
-singapore_bot_ids = np.load(os.path.join(boston_loc, 'singapore_bot_ids.npy'), allow_pickle=True).item()
-taipei_bot_ids = np.load(os.path.join(boston_loc, 'taipei_bot_ids.npy'), allow_pickle=True).item()
-tokyo_bot_ids = np.load(os.path.join(boston_loc, 'tokyo_bot_ids.npy'), allow_pickle=True).item()
-tricity_bot_ids = np.load(os.path.join(boston_loc, 'tricity_bot_ids.npy'), allow_pickle=True).item()
+paris_bot_ids = np.load(os.path.join(paris_loc, 'paris_bot_ids.npy'), allow_pickle=True).item()
+vancouver_bot_ids = np.load(os.path.join(vancouver_loc, 'vancouver_bot_ids.npy'), allow_pickle=True).item()
+riyadh_bot_ids = np.load(os.path.join(riyadh_loc, 'riyadh_bot_ids.npy'), allow_pickle=True).item()
+mumbai_bot_ids = np.load(os.path.join(mumbai_loc, 'mumbai_bot_ids.npy'), allow_pickle=True).item()
+san_francisco_bot_ids = np.load(os.path.join(san_francisco_loc, 'san_francisco_bot_ids.npy'), allow_pickle=True).item()
+singapore_bot_ids = np.load(os.path.join(singapore_loc, 'singapore_bot_ids.npy'), allow_pickle=True).item()
+taipei_bot_ids = np.load(os.path.join(taipei_loc, 'taipei_bot_ids.npy'), allow_pickle=True).item()
+tokyo_bot_ids = np.load(os.path.join(tokyo_loc, 'tokyo_bot_ids.npy'), allow_pickle=True).item()
+tricity_bot_ids = np.load(os.path.join(tricity_loc, 'tricity_bot_ids.npy'), allow_pickle=True).item()
 
 # Load the bot ids in each city
 atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
@@ -181,6 +181,37 @@ taipei_area = os.path.join(taipei_loc, 'shapefiles', 'Taipei_OpenSpace_F.shp')
 tokyo_area = os.path.join(tokyo_loc, 'shapefiles', 'Tokyo_Openspace.shp')
 tricity_area = os.path.join(tricity_loc, 'shapefiles', 'Tricity_OpenSpace.shp')
 
+# the location to the open space shapefiles for foreign cities
+atlanta_city = None
+boston_city = None
+bangkok_city = None
+chicago_city = None
+hong_kong_city = None
+jakarta_city = None
+dhaka_city = None
+kuala_lumpur_city = os.path.join(kuala_lumpur_loc, 'shapefiles', 'kualalumpur_boarder.shp')
+los_angeles_city = None
+london_city = None
+madrid_city = None
+johannesburg_city = None
+saopaulo_city = None
+melbourne_city = None
+auckland_city = None
+wales_city = None
+netherlands_city = None
+new_york_city = None
+paris_city = None
+vancouver_city = None
+riyadh_city = None
+mumbai_city = None
+san_francisco_city = None
+singapore_city = None
+taipei_city = None
+tokyo_city = None
+tricity_city = None
+
+
+
 # the location of the open space shapefiles for Chinese cities
 # OneDrive location: Heat and Tweet/Tweet and Heat Sharing/data/GS_By_City_NoBuffer_China
 beijing_area = os.path.join(beijing_loc, 'shapefiles', 'beijing_greenspace.shp')
@@ -198,35 +229,37 @@ zhengzhou_area = os.path.join(zhengzhou_loc, 'shapefiles', 'zhengzhou_greenspace
 # To be updated: add the bot ids
 cities_dict_foreign = {
     'san_francisco': [san_francisco_box, san_francisco_timezone, san_francisco_loc, san_francisco_area,
-                      san_francisco_bot_ids],
-    'new_york': [new_york_box, new_york_timezone, new_york_loc, new_york_area, new_york_bot_ids],
-    'los_angeles': [los_angeles_box, los_angeles_timezone, los_angeles_loc, los_angeles_area, los_angeles_bot_ids],
-    'chicago': [chicago_box, chicago_timezone, chicago_loc, chicago_area, chicago_bot_ids],
-    'atlanta': [atlanta_box, atlanta_timezone, atlanta_loc, atlanta_area, atlanta_bot_ids],
-    'boston': [boston_box, boston_timezone, boston_loc, boston_area, boston_bot_ids],
-    'london': [london_box, london_timezone, london_loc, london_area, london_bot_ids],
-    'netherlands': [netherland_box, netherland_timezone, netherland_loc, netherland_area, netherland_bot_ids],
-    'hong_kong': [hong_kong_box, hong_kong_timezone, hong_kong_loc, hong_kong_area, hong_kong_bot_ids],
-    'bangkok': [bangkok_box, bangkok_timezone, bangkok_loc, bangkok_area, bangkok_bot_ids],
-    'tokyo': [tokyo_box, tokyo_timezone, tokyo_loc, tokyo_area, tokyo_bot_ids],
-    'singapore': [singapore_box, singapore_timezone, singapore_loc, singapore_area, singapore_bot_ids],
-    'riyadh': [riyadh_box, riyadh_timezone, riyadh_loc, riyadh_area, riyadh_bot_ids],
-    'mumbai': [mumbai_box, mumbai_timezone, mumbai_loc, mumbai_area, mumbai_bot_ids],
-    'jakarta': [jakarta_box, jakarta_timezone, jakarta_loc, jakarta_area, jakarta_bot_ids],
-    'dhaka': [dhaka_box, dhaka_timezone, dhaka_loc, dhaka_area, dhaka_bot_ids],
+                      san_francisco_bot_ids, san_francisco_city],
+    'new_york': [new_york_box, new_york_timezone, new_york_loc, new_york_area, new_york_bot_ids, new_york_city],
+    'los_angeles': [los_angeles_box, los_angeles_timezone, los_angeles_loc, los_angeles_area, los_angeles_bot_ids,
+                    los_angeles_city],
+    'chicago': [chicago_box, chicago_timezone, chicago_loc, chicago_area, chicago_bot_ids, chicago_city],
+    'atlanta': [atlanta_box, atlanta_timezone, atlanta_loc, atlanta_area, atlanta_bot_ids, atlanta_city],
+    'boston': [boston_box, boston_timezone, boston_loc, boston_area, boston_bot_ids, boston_city],
+    'london': [london_box, london_timezone, london_loc, london_area, london_bot_ids, london_city],
+    'netherlands': [netherlands_box, netherlands_timezone, netherlands_loc, netherlands_area, netherlands_bot_ids,
+                    netherlands_city],
+    'hong_kong': [hong_kong_box, hong_kong_timezone, hong_kong_loc, hong_kong_area, hong_kong_bot_ids, hong_kong_city],
+    'bangkok': [bangkok_box, bangkok_timezone, bangkok_loc, bangkok_area, bangkok_bot_ids, bangkok_city],
+    'tokyo': [tokyo_box, tokyo_timezone, tokyo_loc, tokyo_area, tokyo_bot_ids, tokyo_city],
+    'singapore': [singapore_box, singapore_timezone, singapore_loc, singapore_area, singapore_bot_ids, singapore_city],
+    'riyadh': [riyadh_box, riyadh_timezone, riyadh_loc, riyadh_area, riyadh_bot_ids, riyadh_city],
+    'mumbai': [mumbai_box, mumbai_timezone, mumbai_loc, mumbai_area, mumbai_bot_ids, mumbai_city],
+    'jakarta': [jakarta_box, jakarta_timezone, jakarta_loc, jakarta_area, jakarta_bot_ids, jakarta_city],
+    'dhaka': [dhaka_box, dhaka_timezone, dhaka_loc, dhaka_area, dhaka_bot_ids, dhaka_city],
     'kuala_lumper': [kuala_lumpur_box, kuala_lumpur_timezone, kuala_lumpur_loc, kuala_lumpur_area,
-                     kuala_lumpur_bot_ids],
-    'melbourne': [melbourne_box, melbourne_timezone, melbourne_loc, melbourne_area, melbourne_bot_ids],
-    'auckland': [auckland_box, auckland_timezone, auckland_loc, auckland_area, auckland_bot_ids],
-    'wales': [wales_box, wales_timezone, wales_loc, wales_area, wales_bot_ids],
-    'taipei': [taipei_box, taipei_timezone, taipei_loc, taipei_area, taipei_bot_ids],
-    'tricity': [tricity_box, tricity_timezone, tricity_loc, tricity_area, tricity_bot_ids],
-    'paris': [paris_box, paris_timezone, paris_loc, paris_area, paris_bot_ids],
-    'vancouver': [vancouver_box, vancouver_timezone, vancouver_loc, vancouver_area, vancouver_bot_ids],
-    'madrid': [madrid_box, madrid_timezone, madrid_loc, madrid_area, madrid_bot_ids],
+                     kuala_lumpur_bot_ids, kuala_lumpur_city],
+    'melbourne': [melbourne_box, melbourne_timezone, melbourne_loc, melbourne_area, melbourne_bot_ids, melbourne_city],
+    'auckland': [auckland_box, auckland_timezone, auckland_loc, auckland_area, auckland_bot_ids, auckland_city],
+    'wales': [wales_box, wales_timezone, wales_loc, wales_area, wales_bot_ids, wales_city],
+    'taipei': [taipei_box, taipei_timezone, taipei_loc, taipei_area, taipei_bot_ids, taipei_city],
+    'tricity': [tricity_box, tricity_timezone, tricity_loc, tricity_area, tricity_bot_ids, tricity_city],
+    'paris': [paris_box, paris_timezone, paris_loc, paris_area, paris_bot_ids, paris_city],
+    'vancouver': [vancouver_box, vancouver_timezone, vancouver_loc, vancouver_area, vancouver_bot_ids, vancouver_city],
+    'madrid': [madrid_box, madrid_timezone, madrid_loc, madrid_area, madrid_bot_ids, madrid_city],
     'johannesburg': [johannesburg_box, johannesburg_timezone, johannesburg_loc, johannesburg_area,
-                     johannesburg_bot_ids],
-    'sao_paulo': [saopaulo_box, saopaulo_timezone, saopaulo_loc, saopaulo_area, saopaulo_bot_ids]}
+                     johannesburg_bot_ids, johannesburg_city],
+    'sao_paulo': [saopaulo_box, saopaulo_timezone, saopaulo_loc, saopaulo_area, saopaulo_bot_ids, saopaulo_city]}
 
 cities_dict_china = {
     'beijing': [beijing_box, beijing_timezone, beijing_loc, beijing_area],
