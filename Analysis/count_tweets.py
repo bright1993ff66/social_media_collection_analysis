@@ -34,13 +34,13 @@ class CountTweets(object):
 
     def __init__(self, city_name, city_profile_dict, start_time, end_time, utc_or_not):
         assert city_name in city_profile_dict, 'The name of the city is not right!'
-        self.city_name = city_name
+        self.city_name = city_name  # the name of city
         self.city_bounding_box = city_profile_dict[city_name][0]  # load the predefined bounding box
         self.city_timezone = city_profile_dict[city_name][1]  # load the local timezone information
         self.city_loc = city_profile_dict[city_name][2]  # load the location of data
         self.bot_ids = city_profile_dict[city_name][4]  # load the detected bot ids
         self.city_shapefile_loc = city_profile_dict[city_name][5]  # load the shapefile of the city
-        self.count_in_utc = utc_or_not
+        self.count_in_utc = utc_or_not  # use the utc time for counting or not
         self.considered_year_list = ['2016', '2017', '2018', '2019', '2020']
         self.considered_quarter_list = ['Q1', 'Q2', 'Q3', 'Q4']
         self.start_time = start_time
@@ -68,13 +68,14 @@ class CountTweets(object):
                                                      errors='ignore'),
                                                 usecols=considered_colnames,
                                                 dtype=dtype_dict)
-                        # print(dataframe['lat'].dtype.name)
                         geocoded_dataframe = dataframe.loc[~dataframe['lat'].isnull()]
                         # print(geocoded_dataframe['lat'].dtype.name)
                         geocoded_without_duplicates = geocoded_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_tweet_city = self.find_tweet_in_city(dataframe=geocoded_without_bot)
+                        geocoded_in_box = self.find_tweet_in_bounding_box(geocoded_without_bot,
+                                                                          bounding_box_vals=self.city_bounding_box)
+                        geocoded_tweet_city = self.find_tweet_in_city(dataframe=geocoded_in_box)
 
                         # Process the dataframe with lat and lon
                         if geocoded_tweet_city.shape[0] == 0:
@@ -112,7 +113,7 @@ class CountTweets(object):
         default_dataframe_each_hour = self.create_count_dataframe()
         final_count = pd.merge(left=count_dataframe, right=default_dataframe_each_hour,
                                on=['year', 'month', 'day', 'hour', 'weekday'], how='right')
-        final_count['total_count_x'] = final_count['total_count_x'].fillna(0)
+        final_count['total_count_x'] = final_count['total_count_x'].fillna(0)  # fill the NA as zero
         final_count_droped = final_count.drop(['total_count_y'], axis=1)
         final_count_renamed = final_count_droped.rename(columns={'total_count_x': 'total_count'})
         return final_count_renamed
@@ -141,7 +142,9 @@ class CountTweets(object):
                         geocoded_without_duplicates = geocoded_place_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_place_tweet_city = self.find_tweet_place_in_city(geocoded_without_bot)
+                        geocoded_in_box = self.find_tweet_in_bounding_box(geocoded_without_bot,
+                                                                          bounding_box_vals=self.city_bounding_box)
+                        geocoded_place_tweet_city = self.find_tweet_place_in_city(geocoded_in_box)
 
                         # Process the dataframe with lat and lon
                         if geocoded_place_tweet_city.shape[0] == 0:
@@ -183,7 +186,7 @@ class CountTweets(object):
         final_count_renamed = final_count_droped.rename(columns={'total_count_x': 'total_count'})
         return final_count_renamed
 
-     def count_tweets_monthly(self):
+    def count_tweets_monthly(self):
         """
         Count the geocoded and all the tweets posted in one city
         Returns:
@@ -340,8 +343,8 @@ class CountTweets(object):
                                                                         files[index][-8:-6]
                     cur_datetime = datetime(year=int(year), month=int(cur_month_string),
                                             day=int(cur_day_string), hour=int(cur_hour_string))
-                    next_month_string, next_day_string, next_hour_string = files[index + 1][-12:-10], files[index + 1][
-                                                                                                      -10:-8], \
+                    next_month_string, next_day_string, next_hour_string = files[index + 1][-12:-10], \
+                                                                           files[index + 1][-10:-8], \
                                                                            files[index + 1][-8:-6]
                     next_datetime = datetime(year=int(year), month=int(next_month_string),
                                              day=int(next_day_string), hour=int(next_hour_string))
@@ -568,7 +571,8 @@ class CountTweetsOpenSpace(object):
                         lambda row: transform_string_time_to_datetime(row['created_at'],
                                                                       target_time_zone=self.timezone), axis=1)
                 dataframe_without_bot['year'] = dataframe_without_bot.apply(lambda row: row['clean_time'].year, axis=1)
-                dataframe_without_bot['month'] = dataframe_without_bot.apply(lambda row: row['clean_time'].month, axis=1)
+                dataframe_without_bot['month'] = dataframe_without_bot.apply(lambda row: row['clean_time'].month,
+                                                                             axis=1)
                 dataframe_without_bot['day'] = dataframe_without_bot.apply(lambda row: row['clean_time'].day, axis=1)
                 dataframe_without_bot['hour'] = dataframe_without_bot.apply(lambda row: row['clean_time'].hour, axis=1)
                 print('Done!')
@@ -583,7 +587,8 @@ class CountTweetsOpenSpace(object):
                     check_time_year, check_time_month = cur_time.year, cur_time.month
                     check_time_day, check_time_hour = cur_time.day, cur_time.hour
                     dataframe_year_month = dataframe_without_bot.loc[
-                        (dataframe_without_bot['year'] == check_time_year) & (dataframe_without_bot['month'] == check_time_month)]
+                        (dataframe_without_bot['year'] == check_time_year) & (
+                                dataframe_without_bot['month'] == check_time_month)]
                     dataframe_day_hour = dataframe_year_month.loc[
                         (dataframe_year_month['day'] == check_time_day) & (dataframe_year_month['hour'] ==
                                                                            check_time_hour)]

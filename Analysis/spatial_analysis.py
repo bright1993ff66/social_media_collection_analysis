@@ -4,6 +4,7 @@ import pandas as pd
 import geopandas as gpd
 from cities_bounds import cities_dict_foreign, open_space_saving_path
 from utils import column_dtype_dict
+from count_tweets import CountTweets
 
 # Cope with some bad latitude and longitude data
 lat_lon_start_tuple = tuple([str(val) for val in range(10)] + ['-'])
@@ -155,9 +156,11 @@ def main_foreign(considered_cities: set, cities_profile: dict, save_threshold: i
                                                index_col=0, usecols=considered_colnames, dtype=dtype_dict)
                             geocoded_data = data.loc[~data['lat'].isna()]
                             geocoded_final = FindTweetsOpenSpace.preprocess_geoinfo(geocoded_data)
-                            geocoded_tweet_gdf = gpd.GeoDataFrame(geocoded_final,
-                                                                  geometry=gpd.points_from_xy(geocoded_final.lon,
-                                                                                              geocoded_final.lat))
+                            geocoded_in_box = CountTweets.find_tweet_in_bounding_box(
+                                dataframe=geocoded_final, bounding_box_vals=cities_profile[studied_city][0])
+                            geocoded_tweet_gdf = gpd.GeoDataFrame(geocoded_in_box,
+                                                                  geometry=gpd.points_from_xy(geocoded_in_box.lon,
+                                                                                              geocoded_in_box.lat))
                             geocoded_tweet_gdf = geocoded_tweet_gdf.set_crs(epsg=4326, inplace=True)
                             find_obj = FindTweetsOpenSpace(open_space_data=open_space_4326,
                                                            tweet_data=geocoded_tweet_gdf)
@@ -284,6 +287,6 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
 
 if __name__ == '__main__':
     # Find the Weibos posted in Chinese cities' open space
-    considered_cities_set = set(cities_dict_foreign.keys())
+    considered_cities_set = {'kuala_lumper', 'san_francisco'}
     main_foreign(considered_cities=considered_cities_set, cities_profile=cities_dict_foreign,
                  save_threshold=30000, open_space_save_path=open_space_saving_path)
