@@ -519,12 +519,15 @@ class CountTweets(object):
 
 class CountTweetsOpenSpace(object):
 
-    def __init__(self, city_name: str, data_loc: str, start_time, end_time, utc_or_not,
+    def __init__(self, city_name: str, data_loc: str, start_time: datetime, end_time: datetime, utc_or_not: bool,
                  timezone: pytz.timezone, save_loc: str, save_filename: str, bot_ids: set):
         """
         Count the tweets posted in one city's open space
         :param city_name: the name of the studied city
         :param data_loc: the local directory of the csv file saving the tweets
+        :param start_time: the start time for tweet counting
+        :param end_time: the end time for tweet counting
+        :param utc_or_not: counting in UTC time or not; if not, we would conduct counting based on local timezone
         :param timezone: the timezone of the studied city
         :param save_loc: the save location in the local directory
         :param save_filename: the save filename
