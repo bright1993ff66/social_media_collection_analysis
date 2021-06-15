@@ -183,7 +183,7 @@ class CountTweets(object):
         final_count_renamed = final_count_droped.rename(columns={'total_count_x': 'total_count'})
         return final_count_renamed
 
-    def count_tweets_monthly(self):
+     def count_tweets_monthly(self):
         """
         Count the geocoded and all the tweets posted in one city
         Returns:
@@ -218,8 +218,7 @@ class CountTweets(object):
                             subset=['id_str'])
                         geocoded_place_without_bot = geocoded_place_without_duplicates.loc[
                             ~geocoded_place_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_place_tweet_city = CountTweets.find_tweet_place_in_bounding_box(
-                            geocoded_place_without_bot, bounding_box_vals=self.city_bounding_box)
+                        geocoded_place_tweet_city = self.find_tweet_place_in_city(geocoded_place_without_bot)
 
                         # Process the dataframe with lat and lon
                         if geocoded_tweet_city.shape[0] == 0:
