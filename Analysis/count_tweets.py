@@ -175,7 +175,13 @@ class CountTweets(object):
             except FileNotFoundError:
                 print('There is no {} folder in local'.format(str(year)))
         count_place_dataframe = create_dataframe_from_dict(dict_data=geocoded_place_time_count_dict)
-        return count_place_dataframe
+        default_dataframe_each_hour = self.create_count_dataframe()
+        final_count = pd.merge(left=count_place_dataframe, right=default_dataframe_each_hour,
+                               on=['year', 'month', 'day', 'hour', 'weekday'], how='right')
+        final_count['total_count_x'] = final_count['total_count_x'].fillna(0)  # fill the NA as zero
+        final_count_droped = final_count.drop(['total_count_y'], axis=1)
+        final_count_renamed = final_count_droped.rename(columns={'total_count_x': 'total_count'})
+        return final_count_renamed
 
     def count_tweets_monthly(self):
         """
