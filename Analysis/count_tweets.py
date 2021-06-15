@@ -502,6 +502,8 @@ class CountTweets(object):
     def spatial_join(tweet_gdf, shape_area):
         """
         Find the tweets posted in one city's open space
+        :param tweet_gdf: the geopandas dataframe saving the tweets
+        :param shape_area: the shapefile of a studied area, such as city, open space, etc
         :return: tweets posted in open space
         """
         assert tweet_gdf.crs == shape_area.crs, 'The coordinate systems do not match!'
