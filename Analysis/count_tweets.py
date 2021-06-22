@@ -100,7 +100,7 @@ class CountTweets(object):
                         considered_geocoded_time_count_dict = merge_dict(sum_dict=considered_geocoded_time_count_dict,
                                                                          a_dict=geocoded_tweet_counter)
                     except KeyError:
-                        print('The csv file: {} does not have any colnames.Ignore'.format(csv_file))
+                        print('The csv file: {} does not have any column names.Ignore'.format(csv_file))
                     except ValueError:
                         print('ValueError occurs for file: {}. Ignore.'.format(csv_file))
                     except pd.errors.ParserError:
@@ -724,5 +724,5 @@ def main_count_tweets(count_in_utc: bool = True, considered_city_names=None):
 
 
 if __name__ == '__main__':
-    considered_cities = {'kuala_lumper'}
+    considered_cities = {'hong_kong'}
     main_count_tweets(count_in_utc=True, considered_city_names=considered_cities)
