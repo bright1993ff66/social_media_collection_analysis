@@ -8,6 +8,23 @@ from data_paths import figures_path, count_daily_hour_path
 from cities_bounds import cities_dict_foreign, cities_dict_china
 
 
+class PlotRatioCities(object):
+    """
+    Create objects for plotting
+    """
+    def __init__(self, city_name, location, plot_color):
+        """
+        Initialize the object for plotting
+        :param city_name: the name of the city
+        :param location: the location saving the count dataframe
+        :param plot_color: the string used to specify the color for plot
+        """
+        self.city_name = city_name
+        self.data_loc = location
+        self.count_filename = '(UTC){}_count_combine.csv'.format(self.city_name)
+        self.plot_color = plot_color
+
+
 def create_day_plot_for_one_count(dataframe: pd.DataFrame, title: str, start_date: datetime,
                                   end_date: datetime, save_filename: str, in_china=True) -> None:
     """
@@ -130,12 +147,101 @@ def create_day_plot_for_mul_counts(dataframe: pd.DataFrame, title: str, start_da
                          'cities_dict_foreign or cities_dict_china')
 
 
+def plot_ratio(count_dataframe: pd.DataFrame, select_column_name: str, start_date: datetime, end_date: datetime,
+               color_string: str, figure_save_path: str, save_filename: str):
+    """
+    Plot the percentage of geocoded tweets posted in the open space
+    :param count_dataframe: the pandas dataframe saving the number of tweets posted in each hour
+    :param select_column_name: the column name selected to plot
+    :param start_date: the start date for plotting
+    :param end_date: the end date for plotting
+    :param color_string: the string used to specify the color of the line
+    :param figure_save_path: the path used to save the figure
+    :param save_filename: the saved filename
+    :return: None. The created figure is saved to the local directory
+    """
+    count_list, check_time_list = [], []
+    dataframe_copy = count_dataframe.copy()
+    hours = mdates.drange(start_date, end_date, timedelta(hours=1))
+
+    # Specify the column names for the day information
+    if 'date' in count_dataframe:
+        day_column_name = 'date'
+    elif 'day' in count_dataframe:
+        day_column_name = 'day'
+    else:
+        raise ValueError("The day column name should be either 'date' or 'day'")
+
+    # Count the number of tweets in each hour
+    for hour_index, xtick in zip(list(range(int((end_date - start_date).total_seconds()/3600)+1)), hours):
+        check_time = start_date + timedelta(hours=hour_index)
+        check_year, check_month, check_day, check_hour = check_time.year, check_time.month, check_time.day,\
+                                                         check_time.hour
+        dataframe_year = dataframe_copy.loc[dataframe_copy['year'] == check_year]
+        dataframe_month = dataframe_year.loc[dataframe_year['month'] == check_month]
+        dataframe_day = dataframe_month.loc[dataframe_month[day_column_name] == check_day]
+        dataframe_hour = dataframe_day.loc[dataframe_day['hour'] == check_hour]
+        count_list.append(list(dataframe_hour[select_column_name])[0])
+        check_time_list.append(check_time)
+
+    # Create the line plot
+    figure, axis = plt.subplots(1, 1, figsize=(20, 8), dpi=300)
+    axis.plot(hours, count_list, color=color_string)
+
+    # xaxis setting
+    axis.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m-%d-%H'))
+    axis.xaxis.set_major_locator(mdates.DayLocator(interval=30))
+    axis.set_xlabel('Date', size=25)
+
+    # yaxis setting
+    ytick_vals = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    axis.set_yticks(ytick_vals)
+    axis.set_yticklabels([str(val) for val in ytick_vals], size=20)
+    axis.set_ylabel('Ratio', size=25)
+
+    # Set the title and save figure
+    axis.set_facecolor('white')
+    axis.margins(0)
+
+    # Set the top and right axis to be invisible:
+    # https://stackoverflow.com/questions/925024/how-can-i-remove-the-top-and-right-axis-in-matplotlib
+    axis.spines['right'].set_visible(False)
+    axis.spines['top'].set_visible(False)
+
+    # Auto format dates in the x-axis
+    figure.autofmt_xdate()
+
+    figure.savefig(os.path.join(figure_save_path, save_filename))
+
+
+def plot_hist(dataframe, select_column_name: str, color_string: str, figure_save_path: str, save_filename: str):
+    """
+    Plot the histogram of a column
+    :param dataframe: the pandas dataframe saving the number of tweets posted in each hour
+    :param select_column_name: the column name selected to plot
+    :param color_string: the string used to specify the color of the line
+    :param figure_save_path: the path used to save the figure
+    :param save_filename: the saved filename
+    :return: None. The created figure is saved to the local directory
+    """
+    count_list = list(dataframe[select_column_name])
+
+    figure, axis = plt.subplots(1, 1, figsize=(10, 8), dpi=300)
+    axis.hist(count_list, color=color_string)
+
+    # Set the top and right axis to be invisible:
+    axis.spines['right'].set_visible(False)
+    axis.spines['top'].set_visible(False)
+
+    figure.savefig(os.path.join(figure_save_path, save_filename))
+
+
 def create_hour_weekday_plot(dataframe: pd.DataFrame, color_hour: str, color_weekday: str, title_hour: str,
                              title_weekday: str, hour_save_filename: str, weekday_save_filename: str,
                              in_china=True) -> None:
     """
     Create the hour and weekday time distribution plot
-    :param dataframe: a Weibo dataframe
+    :param dataframe: a dataframe saving the number of tweets or Weibos in each hour
     :param color_hour: the color for the hour plot
     :param color_weekday: the color for the weekday plot
     :param title_hour: The title for the hour's figure
@@ -211,17 +317,3 @@ def create_hour_weekday_plot(dataframe: pd.DataFrame, color_hour: str, color_wee
     else:
         fig_hour.savefig(os.path.join(figures_path, 'foreign', hour_save_filename), bbox_inches='tight')
         fig_weekday.savefig(os.path.join(figures_path, 'foreign', weekday_save_filename), bbox_inches='tight')
-
-
-if __name__ == '__main__':
-    for city in cities_dict_foreign:
-        print('Coping with the city: {}'.format(city))
-        count_dataframe = pd.read_csv(os.path.join(count_daily_hour_path, city, '{}_count_combine.csv'.format(city)))
-        timezone = cities_dict_foreign[city][1]
-        start_time = datetime(2016, 5, 7, 0, 0, 0, tzinfo=timezone)
-        end_time = datetime(2020, 12, 31, 0, 0, 0, tzinfo=timezone)
-        create_day_plot_for_mul_counts(dataframe=count_dataframe,
-                                       title='Tweet Count in Each Day - {}'.format(city),
-                                       start_date=start_time, end_date=end_time,
-                                       city_name=city,
-                                       save_filename='{}_open_space_tweet_count_with_total.png'.format(city))
