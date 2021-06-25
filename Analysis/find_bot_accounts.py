@@ -35,14 +35,13 @@ def get_all_geocoded_tweets_in_city(city_name: str, saving_path: str, save_filen
             for csv_file_name in os.listdir(csv_path):
                 print('Coping with the file: {}'.format(csv_file_name))
                 try:
-                    dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file_name), 
+                    dataframe = pd.read_csv(open(os.path.join(csv_path, csv_file_name),
                                                  encoding='utf-8', errors='ignore'),
                                             usecols=['user_id_str', 'id_str', 'lat', 'lon'],
                                             dtype={'user_id_str': str, 'id_str': str})
                     geocoded_dataframe = dataframe.loc[~dataframe['lat'].isnull()]
                     geocoded_without_duplicates = geocoded_dataframe.drop_duplicates(subset=['id_str'])
-                    geocoded_tweet_city = CountTweets.find_tweet_in_city(
-                        geocoded_without_duplicates, bounding_box_vals=city_tweet_obj.city_bounding_box)
+                    geocoded_tweet_city = city_tweet_obj.find_tweet_in_city(geocoded_without_duplicates)
                     dataframe_list.append(geocoded_tweet_city)
                 except KeyError:
                     print('The csv file: {} does not have any column names. Ignore'.format(csv_file_name))
@@ -109,6 +108,29 @@ def get_bot_users(count_dataframe: pd.DataFrame, save_path: str, save_filename: 
     np.save(os.path.join(save_path, save_filename), bot_ids)
 
 
+def merge_bot_ids(city_name: str, bot_id_path: str) -> None:
+    """
+    Merge the detected bot ids locally
+    :param city_name: the name of a city
+    :param bot_id_path: the path saving the bot ids
+    :return: None. The bot ids are saved to local directory
+    """
+    year_list = ['2016', '2017', '2018', '2020']
+    bot_id_files = [file for file in os.listdir(bot_id_path) if (city_name in file) and
+                    (file.endswith('.npy'))]
+    bot_id_files_filtered = []
+    for file in bot_id_files:
+        if file[:4] in year_list:
+            bot_id_files_filtered.append(file)
+
+    bot_id_list = []
+    for file in bot_id_files_filtered:
+        bot_ids = np.load(os.path.join(bot_id_path, file), allow_pickle=True).item()
+        bot_id_list.extend(bot_ids)
+    bot_id_set = set(bot_id_list)
+    np.save(os.path.join(bot_id_path, '{}_bot_ids.npy'.format(city_name)), bot_id_set)
+
+
 def plot_tweet_count_dist(count_dataframe: pd.DataFrame, percentile: float):
     """
     Plot the histogram of the number of tweets posted by users
@@ -130,3 +152,38 @@ def plot_tweet_count_dist(count_dataframe: pd.DataFrame, percentile: float):
     axis.spines['top'].set_visible(False)
     axis.spines['right'].set_visible(False)
     plt.show()
+
+
+if __name__ == '__main__':
+	# For example:
+    considered_cities = {'kuala_lumper', 'greater_kuala_lumper', 'hong_kong'}
+    # Get all the geocoded tweets posted in the cities
+    for city in cities_dict_foreign:
+        print('Coping with the city: {}'.format(city))
+        if city in considered_cities:
+            get_all_geocoded_tweets_in_city(city_name=city,
+                                            saving_path=cities_dict_foreign[city][2],
+                                            save_filename='{}_geocoded_tweets.csv'.format(city))
+        else:
+            print('The city {} has been processed.'.format(city))
+
+    for city in cities_dict_foreign:
+        print('Coping with the city: {}'.format(city))
+        if city in considered_cities:
+            geocoded_data_path = os.path.join(cities_dict_foreign[city][2])
+            geocoded_files = [file for file in os.listdir(geocoded_data_path) if (
+                file.endswith('.csv')) and (city in file)]
+            for csv_file in geocoded_files:
+                year = csv_file[:4]
+                print('Coping with the year: {}'.format(year))
+                print('Coping with the file: {}'.format(csv_file))
+                geocoded_tweets = pd.read_csv(os.path.join(geocoded_data_path, csv_file),
+                                              usecols=['user_id_str', 'id_str', 'lat', 'lon'],
+                                              dtype={'user_id_str': str, 'id_str': str})
+                user_counts = count_user_tweet(geocoded_tweets)
+                print('User tweet counting done!')
+                get_bot_users(count_dataframe=user_counts, save_path=geocoded_data_path,
+                              save_filename=year+'_'+city+'_bot_ids.npy')
+            merge_bot_ids(city_name=city, bot_id_path=geocoded_data_path)
+        else:
+            print('This time we do not consider {}'.format(city))
