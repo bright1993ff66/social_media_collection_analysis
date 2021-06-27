@@ -20,7 +20,7 @@ print(lat_lon_start_tuple)
 # Used column names and data types
 considered_colnames = list(column_dtype_dict.keys())
 dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
-              'created_at': str, 'verified': bool, 'lang': str}
+              'created_at': str, 'verified': bool, 'lang': str, 'url': str}
 print('The considered columns in the tweet dataframe: {}'.format(considered_colnames))
 print('The convert datatypes: {}'.format(dtype_dict))
 
@@ -38,13 +38,17 @@ class CountTweets(object):
         self.city_bounding_box = city_profile_dict[city_name][0]  # load the predefined bounding box
         self.city_timezone = city_profile_dict[city_name][1]  # load the local timezone information
         self.city_loc = city_profile_dict[city_name][2]  # load the location of data
-        self.bot_ids = city_profile_dict[city_name][4]  # load the detected bot ids
         self.city_shapefile_loc = city_profile_dict[city_name][5]  # load the shapefile of the city
         self.count_in_utc = utc_or_not  # use the utc time for counting or not
         self.considered_year_list = ['2016', '2017', '2018', '2019', '2020']
         self.considered_quarter_list = ['Q1', 'Q2', 'Q3', 'Q4']
         self.start_time = start_time
         self.end_time = end_time
+        # load the detected bot ids
+        if type(city_profile_dict[city_name][4]) == set:
+            self.bot_ids = city_profile_dict[city_name][4]
+        elif type(city_profile_dict[city_name][4]) == str:
+            self.bot_ids = np.load(os.path.join(city_profile_dict[city_name][4]), allow_pickle=True).item()
 
     def count_geocoded_tweets_hour(self):
 
@@ -73,9 +77,9 @@ class CountTweets(object):
                         geocoded_without_duplicates = geocoded_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_in_box = self.find_tweet_in_bounding_box(geocoded_without_bot,
-                                                                          bounding_box_vals=self.city_bounding_box)
-                        geocoded_tweet_city = self.find_tweet_in_city(dataframe=geocoded_in_box)
+                        # geocoded_in_box = self.find_tweet_in_bounding_box(geocoded_without_bot,
+                        #                                                   bounding_box_vals=self.city_bounding_box)
+                        geocoded_tweet_city = self.find_tweet_in_city(dataframe=geocoded_without_bot)
 
                         # Process the dataframe with lat and lon
                         if geocoded_tweet_city.shape[0] == 0:
@@ -142,9 +146,9 @@ class CountTweets(object):
                         geocoded_without_duplicates = geocoded_place_dataframe.drop_duplicates(subset=['id_str'])
                         geocoded_without_bot = geocoded_without_duplicates.loc[
                             ~geocoded_without_duplicates['user_id_str'].isin(self.bot_ids)]
-                        geocoded_in_box = self.find_tweet_in_bounding_box(geocoded_without_bot,
-                                                                          bounding_box_vals=self.city_bounding_box)
-                        geocoded_place_tweet_city = self.find_tweet_place_in_city(geocoded_in_box)
+                        # geocoded_in_box = self.find_tweet_in_bounding_box(geocoded_without_bot,
+                        #                                                   bounding_box_vals=self.city_bounding_box)
+                        geocoded_place_tweet_city = self.find_tweet_place_in_city(geocoded_without_bot)
 
                         # Process the dataframe with lat and lon
                         if geocoded_place_tweet_city.shape[0] == 0:
@@ -660,6 +664,13 @@ def main_count_tweets(count_in_utc: bool = True, considered_city_names=None):
             else:
                 timezone = cities_dict_foreign[city][1]
 
+            if type(cities_dict_foreign[city][4]) == set:
+                city_bot_ids = cities_dict_foreign[city][4]
+            elif type(cities_dict_foreign[city][4]) == str:
+                city_bot_ids = np.load(cities_dict_foreign[city][4], allow_pickle=True).item()
+            else:
+                raise ValueError("The bot ids are not loaded correctly!")
+
             # Count the tweets posted within the city
             count_obj = CountTweets(city_name=city, city_profile_dict=cities_dict_foreign,
                                     start_time=datetime(2016, 5, 1, tzinfo=timezone),
@@ -691,7 +702,7 @@ def main_count_tweets(count_in_utc: bool = True, considered_city_names=None):
                                                         save_loc=data_paths.count_daily_hour_path,
                                                         save_filename='{}_open_space_tweet_count.csv'.format(city),
                                                         utc_or_not=count_in_utc,
-                                                        bot_ids=cities_dict_foreign[city][4])
+                                                        bot_ids=city_bot_ids)
             combined_open_space_dataframe = open_space_count_obj.count_tweets_hourly(
                 day_title='Number of Tweets Posted in {} Open Space on Each Day'.format(city),
                 hour_title='Number of Tweets Posted in {} Open Space in Each Hour'.format(city),
@@ -703,7 +714,7 @@ def main_count_tweets(count_in_utc: bool = True, considered_city_names=None):
             count_final = pd.merge(left=geocoded_count_dataframe, right=combined_open_space_dataframe,
                                    on=['year', 'month', 'day', 'hour', 'weekday'])
             count_final['percent'] = (count_final['open_space_count'] / count_final['total_count']).replace(
-                to_replace=[np.inf, np.nan], value=0)
+                to_replace=[np.inf, np.nan], value=-9999)  # For the situations when no tweet is posted in the city
             if os.path.exists(os.path.join(data_paths.count_daily_hour_path, city)):
                 if count_obj.count_in_utc:
                     count_final.to_csv((os.path.join(data_paths.count_daily_hour_path, city,
