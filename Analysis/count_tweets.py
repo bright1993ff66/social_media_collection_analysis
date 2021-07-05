@@ -20,7 +20,7 @@ print(lat_lon_start_tuple)
 # Used column names and data types
 considered_colnames = list(column_dtype_dict.keys())
 dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
-              'created_at': str, 'verified': bool, 'lang': str, 'url': str}
+              'created_at': str, 'verified': str, 'lang': str, 'url': str}
 print('The considered columns in the tweet dataframe: {}'.format(considered_colnames))
 print('The convert datatypes: {}'.format(dtype_dict))
 

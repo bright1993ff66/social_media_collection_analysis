@@ -7,6 +7,12 @@ import os
 import numpy as np
 
 
+# Specify the interested columns and their data types
+column_dtype_dict = {'user_id_str': str, 'id_str': str, 'text': str,
+                     'created_at': str, 'lat': str, 'lon': str, 'place_lat': np.float64,
+                     'place_lon': np.float64, 'verified': str, 'lang': str, 'url': str}
+
+
 def transform_datetime_string_time_to_datetime(string, timezone_info):
     """
     :param string: the string which records the time of the posted tweets(this string's timezone is HK time)
