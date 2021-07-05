@@ -142,7 +142,7 @@ def main_foreign(considered_cities: set, cities_profile: dict, save_threshold: i
         if studied_city in considered_cities:
             tweet_num_counter, file_counter = 0, 0
             print('Load the open space data...')
-            open_space = gpd.read_file(cities_profile[studied_city][3])
+            open_space = gpd.read_file(cities_profile[studied_city][3], encoding='utf-8')
             open_space_4326 = open_space.to_crs(epsg=4326)
             print('Done! Start processing the tweets...')
             data_list = []
@@ -174,15 +174,19 @@ def main_foreign(considered_cities: set, cities_profile: dict, save_threshold: i
                                 concat_data = concat_data.to_crs(epsg=4326)  # set the crs of the tweets in open space
                                 if os.path.exists(os.path.join(open_space_save_path, studied_city)):
                                     concat_data.to_file(os.path.join(open_space_save_path, studied_city,
-                                                                     '{}_{}.shp'.format(studied_city, file_counter)))
+                                                                     '{}_{}.shp'.format(studied_city, file_counter)), 
+																	 encoding='utf-8')
                                     concat_data.to_csv(os.path.join(open_space_save_path, studied_city,
-                                                                    '{}_{}.csv'.format(studied_city, file_counter)))
+                                                                    '{}_{}.csv'.format(studied_city, file_counter)), 
+																	encoding='utf-8')
                                 else:
                                     os.mkdir(os.path.join(open_space_save_path, studied_city))
                                     concat_data.to_file(os.path.join(open_space_save_path, studied_city,
-                                                                     '{}_{}.shp'.format(studied_city, file_counter)))
+                                                                     '{}_{}.shp'.format(studied_city, file_counter)), 
+																	 encoding='utf-8')
                                     concat_data.to_csv(os.path.join(open_space_save_path, studied_city,
-                                                                    '{}_{}.csv'.format(studied_city, file_counter)))
+                                                                    '{}_{}.csv'.format(studied_city, file_counter)), 
+																	encoding='utf-8')
                                 print('Done!')
                                 data_list = []
                                 tweet_num_counter = 0
@@ -196,14 +200,16 @@ def main_foreign(considered_cities: set, cities_profile: dict, save_threshold: i
             concat_data = concat_data.to_crs(epsg=4326)  # set the crs of the tweets in open space
             if os.path.exists(os.path.join(open_space_save_path, studied_city)):
                 concat_data.to_file(
-                    os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)))
+                    os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)), 
+					encoding='utf-8')
                 concat_data.to_csv(
                     os.path.join(open_space_save_path, studied_city, '{}_final.csv'.format(studied_city)),
                     encoding='utf-8')
             else:
                 os.mkdir(os.path.join(open_space_save_path, studied_city))
                 concat_data.to_file(
-                    os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)))
+                    os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)), 
+					encoding='utf-8')
                 concat_data.to_csv(
                     os.path.join(open_space_save_path, studied_city, '{}_final.csv'.format(studied_city)),
                     encoding='utf-8')
@@ -224,7 +230,7 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
         if studied_city in considered_cities:
             weibo_num_counter, file_counter = 0, 0
             print('Load the open space data...')
-            open_space = gpd.read_file(cities_profile[studied_city][3])
+            open_space = gpd.read_file(cities_profile[studied_city][3], encoding='utf-8')
             open_space_4326 = open_space.to_crs(epsg=4326)
             print('Done! Start processing the Weibos...')
             data_list = []
@@ -252,9 +258,11 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
                         concat_data = pd.concat(data_list, axis=0)
                         concat_data = concat_data.to_crs(epsg=4326)  # set the crs of the tweets in open space
                         concat_data.to_file(os.path.join(open_space_save_path, studied_city,
-                                                         '{}_{}.shp'.format(studied_city, file_counter)))
+                                                         '{}_{}.shp'.format(studied_city, file_counter)), 
+														 encoding='utf-8')
                         concat_data.to_csv(os.path.join(open_space_save_path, studied_city,
-                                                        '{}_{}.csv'.format(studied_city, file_counter)))
+                                                        '{}_{}.csv'.format(studied_city, file_counter)), 
+														encoding='utf-8')
                         print('Done!')
                         data_list = []
                         weibo_num_counter = 0
@@ -269,14 +277,16 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
                 concat_data = concat_data.to_crs(epsg=4326)  # set the crs of the tweets in open space
                 if os.path.exists(os.path.join(open_space_save_path, studied_city)):
                     concat_data.to_file(
-                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)))
+                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)), 
+						encoding='utf-8')
                     concat_data.to_csv(
                         os.path.join(open_space_save_path, studied_city, '{}_final.csv'.format(studied_city)),
                         encoding='utf-8')
                 else:
                     os.mkdir(os.path.join(open_space_save_path, studied_city))
                     concat_data.to_file(
-                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)))
+                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)), 
+						encoding='utf-8')
                     concat_data.to_csv(
                         os.path.join(open_space_save_path, studied_city, '{}_final.csv'.format(studied_city)),
                         encoding='utf-8')
