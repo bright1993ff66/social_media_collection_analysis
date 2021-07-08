@@ -21,7 +21,7 @@ print('The convert datatypes: {}'.format(dtype_dict))
 class FindTweetsOpenSpace(object):
     considered_years = [str(year) for year in range(2016, 2021, 1)]
 
-    def __init__(self, city_name, open_space_data: gpd.geodataframe, tweet_data: gpd.geodataframe):
+    def __init__(self, city_name, open_space_data: gpd.geodataframe, tweet_data: pd.DataFrame):
         """
         Initialize the object
         :param city_name: the name of the city
@@ -33,15 +33,13 @@ class FindTweetsOpenSpace(object):
         self.tweets = tweet_data
         self.city_shapefile_loc = cities_dict_foreign[city_name][5]
 
-        # Make sure the coordinate systems are same
-        assert self.open_space.crs.srs == self.tweets.crs.srs, 'The coordinate systems do not match!'
-
     def find_tweets_in_open_space(self):
         """
         Find the tweets posted in one city's open space
         :return: tweets posted in open space
         """
         tweets_in_city = self.find_tweet_in_city()
+        tweets_in_city = tweets_in_city.drop(['index_right'], axis=1)
         joined_data = gpd.sjoin(left_df=tweets_in_city, right_df=self.open_space, op='within')
         joined_data_final = joined_data.drop_duplicates(subset=['id_str'])
         return joined_data_final
@@ -189,12 +187,8 @@ def main_foreign(considered_cities: set, cities_profile: dict, save_threshold: i
                             geocoded_data = data.loc[~data['lat'].isna()]
                             # geocoded_in_box = CountTweets.find_tweet_in_bounding_box(
                             #     dataframe=geocoded_final, bounding_box_vals=cities_profile[studied_city][0])
-                            geocoded_tweet_gdf = gpd.GeoDataFrame(geocoded_data,
-                                                                  geometry=gpd.points_from_xy(geocoded_data.lon,
-                                                                                              geocoded_data.lat))
-                            geocoded_tweet_gdf = geocoded_tweet_gdf.set_crs(epsg=4326, inplace=True)
                             find_obj = FindTweetsOpenSpace(open_space_data=open_space_4326,
-                                                           tweet_data=geocoded_tweet_gdf, city_name=studied_city)
+                                                           tweet_data=geocoded_data, city_name=studied_city)
                             tweets_in_open_space = find_obj.find_tweets_in_open_space()
                             data_list.append(tweets_in_open_space)
                             tweet_num_counter += tweets_in_open_space.shape[0]
@@ -274,12 +268,12 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
                     data = pd.read_csv(os.path.join(csv_path, file), encoding='utf-8', dtype='str')
                     data_renamed = data.rename(columns={'latitude': 'lat', 'longitude': 'lon', 'weibo_id': 'id_str'})
                     geocoded_data = data_renamed.loc[~data_renamed['lat'].isna()]
-                    geocoded_tweet_gdf = gpd.GeoDataFrame(geocoded_data,
-                                                          geometry=gpd.points_from_xy(geocoded_data.lon,
-                                                                                      geocoded_data.lat))
-                    geocoded_tweet_gdf = geocoded_tweet_gdf.set_crs(epsg=4326, inplace=True)
+                    # geocoded_tweet_gdf = gpd.GeoDataFrame(geocoded_data,
+                    #                                       geometry=gpd.points_from_xy(geocoded_data.lon,
+                    #                                                                   geocoded_data.lat))
+                    # geocoded_tweet_gdf = geocoded_tweet_gdf.set_crs(epsg=4326, inplace=True)
                     find_obj = FindTweetsOpenSpace(open_space_data=open_space_4326,
-                                                   tweet_data=geocoded_tweet_gdf, city_name=studied_city)
+                                                   tweet_data=geocoded_data, city_name=studied_city)
                     tweets_in_open_space = find_obj.find_tweets_in_open_space()
                     data_list.append(tweets_in_open_space)
                     weibo_num_counter += tweets_in_open_space.shape[0]
@@ -289,9 +283,11 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
                         concat_data = pd.concat(data_list, axis=0)
                         concat_data = concat_data.to_crs(epsg=4326)  # set the crs of the tweets in open space
                         concat_data.to_file(os.path.join(open_space_save_path, studied_city,
-                                                         '{}_{}.shp'.format(studied_city, file_counter)))
+                                                         '{}_{}.shp'.format(studied_city, file_counter)), 
+                                            encoding='utf-8')
                         concat_data.to_csv(os.path.join(open_space_save_path, studied_city,
-                                                        '{}_{}.csv'.format(studied_city, file_counter)))
+                                                        '{}_{}.csv'.format(studied_city, file_counter)), 
+                                           encoding='utf-8')
                         print('Done!')
                         data_list = []
                         weibo_num_counter = 0
@@ -306,14 +302,16 @@ def main_china(considered_cities: set, cities_profile: dict, save_threshold: int
                 concat_data = concat_data.to_crs(epsg=4326)  # set the crs of the tweets in open space
                 if os.path.exists(os.path.join(open_space_save_path, studied_city)):
                     concat_data.to_file(
-                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)))
+                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)), 
+                    encoding='utf-8')
                     concat_data.to_csv(
                         os.path.join(open_space_save_path, studied_city, '{}_final.csv'.format(studied_city)),
                         encoding='utf-8')
                 else:
                     os.mkdir(os.path.join(open_space_save_path, studied_city))
                     concat_data.to_file(
-                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)))
+                        os.path.join(open_space_save_path, studied_city, '{}_final.shp'.format(studied_city)), 
+                    encoding='utf-8')
                     concat_data.to_csv(
                         os.path.join(open_space_save_path, studied_city, '{}_final.csv'.format(studied_city)),
                         encoding='utf-8')
