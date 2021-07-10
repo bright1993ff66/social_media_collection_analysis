@@ -66,7 +66,8 @@ def main_foreign(save_path):
         print('Coping with the city: {}'.format(city))
         # Get all the csv files saving tweets posted in open space
         city_open_space_tweet_path = os.path.join(open_space_saving_path, city)
-        csv_files = [file for file in os.listdir(city_open_space_tweet_path) if file.endswith('.csv')]
+        csv_files = [file for file in os.listdir(city_open_space_tweet_path) if (
+                file.endswith('.csv')) and (city in file)]
         print('The csv file is: {}'.format(csv_files))
         # Get the raster value for each geocoded tweet
         for csv_file in csv_files:

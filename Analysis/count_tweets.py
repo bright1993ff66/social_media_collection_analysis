@@ -560,7 +560,8 @@ class CountTweetsOpenSpace(object):
         # end_time = datetime(2020, 12, 31, 0, 0, 0, tzinfo=self.timezone)
         for file in os.listdir(self.data_loc):
             cur_time = self.start_time
-            if file.endswith('.csv'):
+			# consider csv files and filename must contain city name
+            if (file.endswith('.csv')) and (self.city_name in file):
                 print('Analyzing the file {} saving the tweets posted in open space...'.format(file))
                 dataframe = pd.read_csv(os.path.join(self.data_loc, file), encoding='utf-8',
                                         usecols=considered_colnames, dtype=dtype_dict)
