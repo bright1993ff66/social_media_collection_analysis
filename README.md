@@ -16,6 +16,7 @@ For the Weibo data, this GitHub repository - [WeiboSpider](https://github.com/da
 
 The [Analysis](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Analysis) folder saves the codes for Twitter & Weibo data analysis.
 
+- The [Tweet_Data_Description.ipynb](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/Tweet_Data_Description.ipynb) saves a description of collected tweet data and some basic time, text, and spatial analysis.
 - The [cities_bounds.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/cities_bounds.py) saves the profiles of each city, including the bounding box, timezone, path to the tweet data, open space shapefile.
 - The [count_tweets.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/count_tweets.py) and [count_weibos.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/count_weibos.py) have the codes for counting the tweets posted in the cities and their open space.
 - The [spatial_analysis.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/spatial_analysis.py) stores the codes of finding the tweets or Weibos posted in a city's open space, based on the [geopandas spatial join function](https://geopandas.org/gallery/spatial_joins.html).
