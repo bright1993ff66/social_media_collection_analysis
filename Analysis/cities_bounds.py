@@ -1,12 +1,18 @@
 import os
 import pytz
+import numpy as np
 
-# The project path
-heat_tweet_path = r'XXX'
-# The happyplaces_path should contain all the names of cities as the folder name
-happyplaces_path = r'XXX'
+from data_paths import geocoded_save_path
+
+# The happyplaces and Weibo path should contain all the names
+# of cities as the folder name
+happyplaces_path = r'/home/data_center/Social_Media/happyplacestweets'
+weibo_path = r'/home/haoliang/projects/count_tweet/geocoded_weibos_heat_weibo'
+
+# Specify the shapefile path
+shapefiles_path = r'/home/haoliang/projects/count_tweet/shapefiles'
 # The path below used to save the tweets posted in the open space
-open_space_saving_path = r'XXX'
+open_space_saving_path = r'/home/haoliang/projects/count_tweet/open_space'
 
 # The bounding boxes of cities
 # lon_min, lat_min, lon_max, lat_max
@@ -36,7 +42,7 @@ tricity_box = [18.354115, 54.260080, 18.948665, 54.586999]
 paris_box = [2.223266, 48.815541, 2.474577, 48.907088]
 vancouver_box = [-123.233099, 49.195055, -123.016806, 49.319192]
 madrid_box = [-4.133461, 40.184777, -3.212349, 40.760370]
-johannesburg_box = [27.935249, -26.241503, 28.143009, -26.100564]
+johannesburg_box = [27.7100, -26.5300, 28.2200, -25.8900]
 saopaulo_box = [-46.995647, -24.025362, -46.309350, -23.338671]
 # For cities in China
 shanghai_box = [120.8469, 30.6852, 122.2435, 31.8881]
@@ -57,7 +63,7 @@ chicago_timezone, chicago_loc = pytz.timezone('America/Chicago'), os.path.join(h
 atlanta_timezone, atlanta_loc = pytz.timezone('America/New_York'), os.path.join(happyplaces_path, 'Atlanta-Boston')
 boston_timezone, boston_loc = pytz.timezone('America/New_York'), os.path.join(happyplaces_path, 'Atlanta-Boston')
 london_timezone, london_loc = pytz.timezone('Europe/London'), os.path.join(happyplaces_path, 'London')
-netherland_timezone, netherland_loc = pytz.timezone('Europe/Amsterdam'), os.path.join(happyplaces_path, 'Netherlands')
+netherlands_timezone, netherlands_loc = pytz.timezone('Europe/Amsterdam'), os.path.join(happyplaces_path, 'Netherlands')
 hong_kong_timezone, hong_kong_loc = pytz.timezone('Hongkong'), os.path.join(happyplaces_path, 'HongKong')
 bangkok_timezone, bangkok_loc = pytz.timezone('Asia/Bangkok'), os.path.join(happyplaces_path, 'Bangkok')
 tokyo_timezone, tokyo_loc = pytz.timezone('Asia/Tokyo'), os.path.join(happyplaces_path, 'Tokyo')
@@ -83,153 +89,206 @@ johannesburg_timezone, johannesburg_loc = pytz.timezone('Africa/Johannesburg'), 
     happyplaces_path, 'Mad-John-Sao')
 saopaulo_timezone, saopaulo_loc = pytz.timezone('America/Sao_Paulo'), os.path.join(happyplaces_path, 'Mad-John-Sao')
 # The timezone of foreign cities and local location of corresponding tweets
-beijing_timezone, beijing_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Beijing')
-tianjin_timezone, tianjin_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Tianjin')
-changsha_timezone, changsha_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Changsha')
-chengdu_timezone, chengdu_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Chengdu')
-hangzhou_timezone, hangzhou_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Hangzhou')
-shanghai_timezone, shanghai_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Shanghai')
-shenyang_timezone, shenyang_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Shenyang')
-shenzhen_timezone, shenzhen_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Shenzhen')
-zhengzhou_timezone, zhengzhou_loc = pytz.timezone('Asia/Shanghai'), os.path.join(happyplaces_path, 'Zhengzhou')
+beijing_timezone, beijing_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+tianjin_timezone, tianjin_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+changsha_timezone, changsha_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+chengdu_timezone, chengdu_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+hangzhou_timezone, hangzhou_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+shanghai_timezone, shanghai_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+shenyang_timezone, shenyang_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+shenzhen_timezone, shenzhen_loc = pytz.timezone('Asia/Shanghai'), weibo_path
+zhengzhou_timezone, zhengzhou_loc = pytz.timezone('Asia/Shanghai'), weibo_path
 
 # Load the bot ids in each city
-atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
-boston_bot_ids = np.load(os.path.join(boston_loc, 'boston_bot_ids.npy'), allow_pickle=True).item()
-bangkok_bot_ids = np.load(os.path.join(bangkok_loc, 'bangkok_bot_ids.npy'), allow_pickle=True).item()
-chicago_bot_ids = np.load(os.path.join(chicago_loc, 'chicago_bot_ids.npy'), allow_pickle=True).item()
-hong_kong_bot_ids = np.load(os.path.join(hong_kong_loc, 'hong_kong_bot_ids.npy'), allow_pickle=True).item()
-jakarta_bot_ids = np.load(os.path.join(jakarta_loc, 'jakarta_bot_ids.npy'), allow_pickle=True).item()
-dhaka_bot_ids = np.load(os.path.join(dhaka_loc, 'dhaka_bot_ids.npy'), allow_pickle=True).item()
-kuala_lumpur_bot_ids = np.load(os.path.join(kuala_lumpur_loc, 'kuala_lumper_bot_ids.npy'), allow_pickle=True).item()
-los_angeles_bot_ids = np.load(os.path.join(los_angeles_loc, 'los_angeles_bot_ids.npy'), allow_pickle=True).item()
-london_bot_ids = np.load(os.path.join(london_loc, 'london_bot_ids.npy'), allow_pickle=True).item()
-madrid_bot_ids = np.load(os.path.join(madrid_loc, 'madrid_bot_ids.npy'), allow_pickle=True).item()
-johannesburg_bot_ids = np.load(os.path.join(johannesburg_loc, 'johannesburg_bot_ids.npy'), allow_pickle=True).item()
-saopaulo_bot_ids = np.load(os.path.join(saopaulo_loc, 'sao_paulo_bot_ids.npy'), allow_pickle=True).item()
-melbourne_bot_ids = np.load(os.path.join(melbourne_loc, 'melbourne_bot_ids.npy'), allow_pickle=True).item()
-auckland_bot_ids = np.load(os.path.join(auckland_loc, 'auckland_bot_ids.npy'), allow_pickle=True).item()
-wales_bot_ids = np.load(os.path.join(wales_loc, 'wales_bot_ids.npy'), allow_pickle=True).item()
-netherlands_bot_ids = np.load(os.path.join(netherlands_loc, 'netherlands_bot_ids.npy'), allow_pickle=True).item()
-new_york_bot_ids = np.load(os.path.join(new_york_loc, 'new_york_bot_ids.npy'), allow_pickle=True).item()
-paris_bot_ids = np.load(os.path.join(paris_loc, 'paris_bot_ids.npy'), allow_pickle=True).item()
-vancouver_bot_ids = np.load(os.path.join(vancouver_loc, 'vancouver_bot_ids.npy'), allow_pickle=True).item()
-riyadh_bot_ids = np.load(os.path.join(riyadh_loc, 'riyadh_bot_ids.npy'), allow_pickle=True).item()
-mumbai_bot_ids = np.load(os.path.join(mumbai_loc, 'mumbai_bot_ids.npy'), allow_pickle=True).item()
-san_francisco_bot_ids = np.load(os.path.join(san_francisco_loc, 'san_francisco_bot_ids.npy'), allow_pickle=True).item()
-singapore_bot_ids = np.load(os.path.join(singapore_loc, 'singapore_bot_ids.npy'), allow_pickle=True).item()
-taipei_bot_ids = np.load(os.path.join(taipei_loc, 'taipei_bot_ids.npy'), allow_pickle=True).item()
-tokyo_bot_ids = np.load(os.path.join(tokyo_loc, 'tokyo_bot_ids.npy'), allow_pickle=True).item()
-tricity_bot_ids = np.load(os.path.join(tricity_loc, 'tricity_bot_ids.npy'), allow_pickle=True).item()
-
-# Load the bot ids in each city
-atlanta_bot_ids = np.load(os.path.join(atlanta_loc, 'atlanta_bot_ids.npy'), allow_pickle=True).item()
-boston_bot_ids = None
-bangkok_bot_ids = None
-chicago_bot_ids = None
-hong_kong_bot_ids = None
-jakarta_bot_ids = None
-dhaka_bot_ids = None
-kuala_lumpur_bot_ids = None
-los_angeles_bot_ids = None
-london_bot_ids = None
-madrid_bot_ids = None
-johannesburg_bot_ids = None
-saopaulo_bot_ids = None
-melbourne_bot_ids = None
-auckland_bot_ids = None
-wales_bot_ids = None
-netherland_bot_ids = None
-new_york_bot_ids = np.load(os.path.join(new_york_loc, 'bot_ids.npy'), allow_pickle=True).item()
-paris_bot_ids = None
-vancouver_bot_ids = None
-riyadh_bot_ids = None
-mumbai_bot_ids = None
-san_francisco_bot_ids = None
-singapore_bot_ids = None
-taipei_bot_ids = None
-tokyo_bot_ids = None
-tricity_bot_ids = None
-
-
-# the location to the open space shapefiles for foreign cities
-atlanta_area = os.path.join(atlanta_loc, 'shapefiles', 'Atlanta_GreenSpace.shp')
-boston_area = os.path.join(boston_loc, 'shapefiles', 'Boston_OpenspaceUpdate.shp')
-bangkok_area = os.path.join(bangkok_loc, 'shapefiles', 'Bankok_GreenSpace.shp')
-chicago_area = os.path.join(chicago_loc, 'shapefiles', 'Chicago_Greenspace.shp')
-hong_kong_area = os.path.join(hong_kong_loc, 'shapefiles', 'HK_Openspace.shp')
-jakarta_area = os.path.join(jakarta_loc, 'shapefiles', 'Jakarta_Openspace.shp')
-dhaka_area = os.path.join(dhaka_loc, 'shapefiles', 'Dhaka_Opensapce.shp')
-kuala_lumpur_area = os.path.join(kuala_lumpur_loc, 'shapefiles', 'KualaLumpur_Openspace.shp')
-los_angeles_area = os.path.join(los_angeles_loc, 'shapefiles', 'LA_Openspace.shp')
-london_area = os.path.join(london_loc, 'shapefiles', 'London_Openspace_F.shp')
-madrid_area = os.path.join(madrid_loc, 'shapefiles', 'Madrid_Openspace.shp')
-johannesburg_area = os.path.join(johannesburg_loc, 'shapefiles', 'Johannesburg_Openspace.shp')
-saopaulo_area = os.path.join(saopaulo_loc, 'shapefiles', 'SP_Openspace.shp')
-melbourne_area = os.path.join(melbourne_loc, 'shapefiles', 'Melbourne_Openspace.shp')
-auckland_area = os.path.join(auckland_loc, 'shapefiles', 'Auckland_Greenspace.shp')
-wales_area = os.path.join(wales_loc, 'shapefiles', 'Wales_OpenSpace.shp')
-netherland_area = os.path.join(netherland_loc, 'shapefiles', 'netherlands_greenspace.shp')
-new_york_area = os.path.join(new_york_loc, 'shapefiles', 'Greenspace.shp')
-paris_area = os.path.join(paris_loc, 'shapefiles', 'Paris_Openspace.shp')
-vancouver_area = os.path.join(vancouver_loc, 'shapefiles', 'Vancouver_Openspace.shp')
-riyadh_area = os.path.join(riyadh_loc, 'shapefiles', 'Riyadh_Openspace.shp')
-mumbai_area = os.path.join(mumbai_loc, 'shapefiles', 'Mumbai_OpenSpaceF.shp')
-san_francisco_area = os.path.join(san_francisco_loc, 'shapefiles', 'Bay_Openspace.shp')
-singapore_area = os.path.join(singapore_loc, 'shapefiles', 'Singapore4326.shp')
-taipei_area = os.path.join(taipei_loc, 'shapefiles', 'Taipei_OpenSpace_F.shp')
-tokyo_area = os.path.join(tokyo_loc, 'shapefiles', 'Tokyo_Openspace.shp')
-tricity_area = os.path.join(tricity_loc, 'shapefiles', 'Tricity_OpenSpace.shp')
+atlanta_bot_ids = os.path.join(geocoded_save_path, 'atlanta',
+                               'atlanta_bot_ids.npy')
+boston_bot_ids = os.path.join(geocoded_save_path, 'boston',
+                              'boston_bot_ids.npy')
+bangkok_bot_ids = os.path.join(geocoded_save_path, 'bangkok',
+                               'bangkok_bot_ids.npy')
+chicago_bot_ids = os.path.join(geocoded_save_path, 'chicago',
+                               'chicago_bot_ids.npy')
+hong_kong_bot_ids = os.path.join(geocoded_save_path, 'hong_kong',
+                                 'hong_kong_bot_ids.npy')
+jakarta_bot_ids = os.path.join(geocoded_save_path, 'jakarta',
+                               'jakarta_bot_ids.npy')
+dhaka_bot_ids = os.path.join(geocoded_save_path, 'dhaka',
+                             'dhaka_bot_ids.npy')
+kuala_lumpur_bot_ids = os.path.join(geocoded_save_path,
+                                    'kuala_lumper',
+                                    'kuala_lumper_bot_ids.npy')
+los_angeles_bot_ids = os.path.join(geocoded_save_path,
+                                   'los_angeles',
+                                   'los_angeles_bot_ids.npy')
+london_bot_ids = os.path.join(geocoded_save_path,
+                              'london',
+                              'london_bot_ids.npy')
+madrid_bot_ids = os.path.join(geocoded_save_path,
+                              'madrid',
+                              'madrid_bot_ids.npy')
+johannesburg_bot_ids = os.path.join(geocoded_save_path,
+                                    'johannesburg',
+                                    'johannesburg_bot_ids.npy')
+saopaulo_bot_ids = os.path.join(geocoded_save_path,
+                                'sao_paulo',
+                                'sao_paulo_bot_ids.npy')
+melbourne_bot_ids = os.path.join(geocoded_save_path,
+                                 'melbourne',
+                                 'melbourne_bot_ids.npy')
+auckland_bot_ids = os.path.join(geocoded_save_path,
+                                'auckland',
+                                'auckland_bot_ids.npy')
+wales_bot_ids = os.path.join(geocoded_save_path,
+                             'wales',
+                             'wales_bot_ids.npy')
+netherlands_bot_ids = os.path.join(geocoded_save_path,
+                                   'netherlands',
+                                   'netherlands_bot_ids.npy')
+new_york_bot_ids = os.path.join(geocoded_save_path,
+                                'new_york',
+                                'new_york_bot_ids.npy')
+paris_bot_ids = os.path.join(geocoded_save_path,
+                             'paris',
+                             'paris_bot_ids.npy')
+vancouver_bot_ids = os.path.join(geocoded_save_path,
+                                 'vancouver',
+                                 'vancouver_bot_ids.npy')
+riyadh_bot_ids = os.path.join(geocoded_save_path,
+                              'riyadh',
+                              'riyadh_bot_ids.npy')
+mumbai_bot_ids = os.path.join(geocoded_save_path,
+                              'mumbai',
+                              'mumbai_bot_ids.npy')
+san_francisco_bot_ids = os.path.join(geocoded_save_path,
+                                     'san_francisco',
+                                     'san_francisco_bot_ids.npy')
+singapore_bot_ids = os.path.join(geocoded_save_path,
+                                 'singapore',
+                                 'singapore_bot_ids.npy')
+taipei_bot_ids = os.path.join(geocoded_save_path,
+                              'taipei',
+                              'taipei_bot_ids.npy')
+tokyo_bot_ids = os.path.join(geocoded_save_path,
+                             'tokyo',
+                             'tokyo_bot_ids.npy')
+tricity_bot_ids = os.path.join(geocoded_save_path,
+                               'tricity',
+                               'tricity_bot_ids.npy')
+# To do: get the bot ids for each city
+beijing_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+tianjin_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+changsha_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+chengdu_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+hangzhou_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+shanghai_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+shenyang_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+shenzhen_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
+zhengzhou_bot_ids = os.path.join(os.getcwd(), 'weibo_bots_final.npy')
 
 # the location to the open space shapefiles for foreign cities
-atlanta_city = None
-boston_city = None
-bangkok_city = None
-chicago_city = None
-hong_kong_city = None
-jakarta_city = None
-dhaka_city = None
-kuala_lumpur_city = os.path.join(kuala_lumpur_loc, 'shapefiles', 'kualalumpur_boarder.shp')
-los_angeles_city = None
-london_city = None
-madrid_city = None
-johannesburg_city = None
-saopaulo_city = None
-melbourne_city = None
-auckland_city = None
-wales_city = None
-netherlands_city = None
-new_york_city = None
-paris_city = None
-vancouver_city = None
-riyadh_city = None
-mumbai_city = None
-san_francisco_city = None
-singapore_city = None
-taipei_city = None
-tokyo_city = None
-tricity_city = None
+atlanta_area = os.path.join(shapefiles_path, 'atlanta_greenspace.shp')
+boston_area = os.path.join(shapefiles_path, 'boston_greenspace.shp')
+bangkok_area = os.path.join(shapefiles_path, 'bankok_greenspace.shp')
+chicago_area = os.path.join(shapefiles_path, 'chicago_greenspace.shp')
+hong_kong_area = os.path.join(shapefiles_path, 'hongkong_greenspace.shp')
+jakarta_area = os.path.join(shapefiles_path, 'jakarta_greenspace.shp')
+dhaka_area = os.path.join(shapefiles_path, 'dhaka_greenspace.shp')
+kuala_lumpur_area = os.path.join(shapefiles_path
+                                 ,'kualalumpur_greenspace.shp')
+greater_kuala_lumpur_area = os.path.join(
+    shapefiles_path,'greaterkualalumpur_greenspace.shp')
+los_angeles_area = os.path.join(shapefiles_path,
+                                'losangeles_greenspace.shp')
+london_area = os.path.join(shapefiles_path, 'london_greenspace.shp')
+madrid_area = os.path.join(shapefiles_path, 'madrid_greenspace.shp')
+johannesburg_area = os.path.join(johannesburg_loc, 'shapefiles',
+                                 'johannesburg_greenspace.shp')
+melbourne_area = os.path.join(shapefiles_path, 'melbourne_greenspace.shp')
+auckland_area = os.path.join(shapefiles_path, 'auckland_greenspace.shp')
+wales_area = os.path.join(shapefiles_path, 'wales_greenspace.shp')
+netherlands_area = os.path.join(shapefiles_path, 'netherlands_greenspace.shp')
+netherland_open_spaces = [os.path.join(shapefiles_path, file) for file in os.listdir(shapefiles_path) if
+                          ('netherland_green' in file) and (file.endswith('.shp'))]
+new_york_area = os.path.join(shapefiles_path, 'newyork_greenspace.shp')
+paris_area = os.path.join(shapefiles_path, 'paris_greenspace.shp')
+vancouver_area = os.path.join(shapefiles_path, 'vancouver_greenspace.shp')
+riyadh_area = os.path.join(shapefiles_path, 'riyadh_greenspace.shp')
+mumbai_area = os.path.join(shapefiles_path, 'mumbai_greenspace.shp')
+saopaulo_area = os.path.join(shapefiles_path, 'saopaulo_greenspace.shp')
+bay_area_green = os.path.join(shapefiles_path, 'bay_greenspace.shp')
+san_francisco_area_green = os.path.join(shapefiles_path,
+                                        'sanfrancisco_greenspace.shp')
+singapore_area = os.path.join(shapefiles_path,'singapore_greenspace.shp')
+taipei_area = os.path.join(shapefiles_path, 'taipei_greenspace.shp')
+tokyo_area = os.path.join(shapefiles_path, 'tokyo_greenspace.shp')
+tricity_area = os.path.join(shapefiles_path, 'tricity_greenspace.shp')
 
-
+# the location to the city shapefile for foreign cities
+atlanta_city = os.path.join(shapefiles_path, 'atlanta_border.shp')
+boston_city = os.path.join(shapefiles_path, 'boston_border.shp')
+bangkok_city = os.path.join(shapefiles_path, 'bankok_border.shp')
+chicago_city = os.path.join(shapefiles_path, 'chicago_border.shp')
+hong_kong_city = os.path.join(shapefiles_path, 'hongkong_border.shp')
+jakarta_city = os.path.join(shapefiles_path, 'jakarta_border.shp')
+dhaka_city = os.path.join(shapefiles_path, 'dhaka_border.shp')
+kuala_lumpur_city = os.path.join(shapefiles_path,
+                                 'kualalumpur_border.shp')
+greater_kuala_lumpur_city = os.path.join(shapefiles_path,
+                                         'greaterkualalumpur_border.shp')
+los_angeles_city = os.path.join(shapefiles_path,
+                                'losangeles_border.shp')
+london_city = os.path.join(shapefiles_path, 'london_border.shp')
+madrid_city = os.path.join(shapefiles_path, 'madrid_border.shp')
+johannesburg_city = os.path.join(shapefiles_path,
+                                 'johannesburg_border.shp')
+saopaulo_city = os.path.join(shapefiles_path,'saopaulo_border.shp')
+melbourne_city = os.path.join(shapefiles_path,'melbourne_border.shp')
+auckland_city = os.path.join(shapefiles_path, 'auckland_border.shp')
+wales_city = os.path.join(shapefiles_path, 'wales_border.shp')
+netherlands_city = os.path.join(shapefiles_path, 'netherlands_border.shp')
+new_york_city = os.path.join(shapefiles_path,'newyork_border.shp')
+paris_city = os.path.join(shapefiles_path, 'paris_border.shp')
+vancouver_city = os.path.join(shapefiles_path, 'vancouver_border.shp')
+riyadh_city = os.path.join(shapefiles_path, 'riyadh_border.shp')
+mumbai_city = os.path.join(shapefiles_path, 'mumbai_border.shp')
+san_francisco_city = os.path.join(shapefiles_path,
+                                  'sanfrancisco_border.shp')
+bay_area_city = os.path.join(shapefiles_path,
+                             'bay_border.shp')
+singapore_city = os.path.join(shapefiles_path,'singapore_border.shp')
+taipei_city = os.path.join(shapefiles_path,'taipei_border.shp')
+tokyo_city = os.path.join(shapefiles_path, 'tokyo_border.shp')
+tricity_city = os.path.join(shapefiles_path, 'tricity_border.shp')
 
 # the location of the open space shapefiles for Chinese cities
-# OneDrive location: Heat and Tweet/Tweet and Heat Sharing/data/GS_By_City_NoBuffer_China
-beijing_area = os.path.join(beijing_loc, 'shapefiles', 'beijing_greenspace.shp')
-tianjin_area = os.path.join(tianjin_loc, 'shapefiles', 'tianjin_greenspace.shp')
-changsha_area = os.path.join(changsha_loc, 'shapefiles', 'changsha_greenspace.shp')
-chengdu_area = os.path.join(chengdu_loc, 'shapefiles', 'chengdu_greenspace.shp')
-hangzhou_area = os.path.join(hangzhou_loc, 'shapefiles', 'hangzhou_greenspace.shp')
-shanghai_area = os.path.join(shanghai_loc, 'shapefiles', 'shanghai_greenspace.shp')
-shenyang_area = os.path.join(shenyang_loc, 'shapefiles', 'shenyang_greenspace.shp')
-shenzhen_area = os.path.join(shenzhen_loc, 'shapefiles', 'shenzhen_greenspace.shp')
-zhengzhou_area = os.path.join(zhengzhou_loc, 'shapefiles', 'zhengzhou_greenspace.shp')
+# TODO: Add the cities open space shapefile to server
+beijing_area = os.path.join(shapefiles_path, 'beijing_greenspace.shp')
+tianjin_area = os.path.join(shapefiles_path, 'tianjin_greenspace.shp')
+changsha_area = os.path.join(shapefiles_path, 'changsha_greenspace.shp')
+chengdu_area = os.path.join(shapefiles_path, 'chengdu_greenspace.shp')
+hangzhou_area = os.path.join(shapefiles_path, 'hangzhou_greenspace.shp')
+shanghai_area = os.path.join(shapefiles_path, 'shanghai_greenspace.shp')
+shenyang_area = os.path.join(shapefiles_path, 'shenyang_greenspace.shp')
+shenzhen_area = os.path.join(shapefiles_path, 'shenzhen_greenspace.shp')
+zhengzhou_area = os.path.join(shapefiles_path, 'zhengzhou_greenspace.shp')
+
+# TODO: Add the mainland cities' city boundary
+beijing_city = None
+tianjin_city = None
+changsha_city = None
+chengdu_city = None
+hangzhou_city = None
+shanghai_city = os.path.join(shapefiles_path, 'shanghai_border.shp')
+shenyang_city = None
+shenzhen_city = None
+zhengzhou_city = None
 
 # final cities dicts: Use this dictionary in a loop
-# [bounding box info, timezone info, location of tweets, loc of the data of this city, path to open space shapefile]
-# To be updated: add the bot ids
 cities_dict_foreign = {
-    'san_francisco': [san_francisco_box, san_francisco_timezone, san_francisco_loc, san_francisco_area,
+    'san_francisco': [san_francisco_box, san_francisco_timezone, san_francisco_loc, san_francisco_area_green,
                       san_francisco_bot_ids, san_francisco_city],
+    'bay_area':[san_francisco_box, san_francisco_timezone, san_francisco_loc, bay_area_green,
+                      san_francisco_bot_ids, bay_area_city],
     'new_york': [new_york_box, new_york_timezone, new_york_loc, new_york_area, new_york_bot_ids, new_york_city],
     'los_angeles': [los_angeles_box, los_angeles_timezone, los_angeles_loc, los_angeles_area, los_angeles_bot_ids,
                     los_angeles_city],
@@ -237,8 +296,7 @@ cities_dict_foreign = {
     'atlanta': [atlanta_box, atlanta_timezone, atlanta_loc, atlanta_area, atlanta_bot_ids, atlanta_city],
     'boston': [boston_box, boston_timezone, boston_loc, boston_area, boston_bot_ids, boston_city],
     'london': [london_box, london_timezone, london_loc, london_area, london_bot_ids, london_city],
-    'netherlands': [netherlands_box, netherlands_timezone, netherlands_loc, netherlands_area, netherlands_bot_ids,
-                    netherlands_city],
+    'netherlands': [netherlands_box, netherlands_timezone, netherlands_loc, netherlands_area, netherlands_bot_ids, netherlands_city],
     'hong_kong': [hong_kong_box, hong_kong_timezone, hong_kong_loc, hong_kong_area, hong_kong_bot_ids, hong_kong_city],
     'bangkok': [bangkok_box, bangkok_timezone, bangkok_loc, bangkok_area, bangkok_bot_ids, bangkok_city],
     'tokyo': [tokyo_box, tokyo_timezone, tokyo_loc, tokyo_area, tokyo_bot_ids, tokyo_city],
@@ -249,6 +307,8 @@ cities_dict_foreign = {
     'dhaka': [dhaka_box, dhaka_timezone, dhaka_loc, dhaka_area, dhaka_bot_ids, dhaka_city],
     'kuala_lumper': [kuala_lumpur_box, kuala_lumpur_timezone, kuala_lumpur_loc, kuala_lumpur_area,
                      kuala_lumpur_bot_ids, kuala_lumpur_city],
+    'greater_kuala_lumper': [kuala_lumpur_box, kuala_lumpur_timezone, kuala_lumpur_loc, greater_kuala_lumpur_area,
+                         kuala_lumpur_bot_ids, greater_kuala_lumpur_city],
     'melbourne': [melbourne_box, melbourne_timezone, melbourne_loc, melbourne_area, melbourne_bot_ids, melbourne_city],
     'auckland': [auckland_box, auckland_timezone, auckland_loc, auckland_area, auckland_bot_ids, auckland_city],
     'wales': [wales_box, wales_timezone, wales_loc, wales_area, wales_bot_ids, wales_city],
@@ -261,13 +321,36 @@ cities_dict_foreign = {
                      johannesburg_bot_ids, johannesburg_city],
     'sao_paulo': [saopaulo_box, saopaulo_timezone, saopaulo_loc, saopaulo_area, saopaulo_bot_ids, saopaulo_city]}
 
+
+cities_dict_netherland = {'netherland_{}'.format(file[-5]):
+                          [netherlands_box, netherlands_timezone,
+                            netherlands_loc, file,
+                            netherlands_bot_ids, netherlands_city] for file in netherland_open_spaces}
+
+
 cities_dict_china = {
-    'beijing': [beijing_box, beijing_timezone, beijing_loc, beijing_area],
-    'changsha': [changsha_box, changsha_timezone, changsha_loc, changsha_area],
-    'chengdu': [chengdu_box, chengdu_timezone, chengdu_loc, chengdu_area],
-    'hangzhou': [hangzhou_box, hangzhou_timezone, hangzhou_loc, hangzhou_area],
-    'shanghai': [shanghai_box, shanghai_timezone, shanghai_loc, shanghai_area],
-    'shenyang': [shenyang_box, shenyang_timezone, shenyang_loc, shenyang_area],
-    'shenzhen': [shenzhen_box, shenzhen_timezone, shenzhen_loc, shenzhen_area],
-    'tianjin': [tianjin_box, tianjin_timezone, tianjin_loc, tianjin_area],
-    'zhengzhou': [zhengzhou_box, zhengzhou_timezone, zhengzhou_loc, zhengzhou_area]}
+    'beijing': [beijing_box, beijing_timezone, beijing_loc, beijing_area,
+                beijing_bot_ids, beijing_city],
+    'changsha': [changsha_box, changsha_timezone, changsha_loc, changsha_area,
+                 changsha_bot_ids, changsha_city],
+    'chengdu': [chengdu_box, chengdu_timezone, chengdu_loc, chengdu_area,
+                chengdu_bot_ids, chengdu_city],
+    'hangzhou': [hangzhou_box, hangzhou_timezone, hangzhou_loc, hangzhou_area,
+                 hangzhou_bot_ids, hangzhou_city],
+    'shanghai': [shanghai_box, shanghai_timezone, shanghai_loc, shanghai_area,
+                 shanghai_bot_ids, shanghai_city],
+    'shenyang': [shenyang_box, shenyang_timezone, shenyang_loc, shenyang_area,
+                 shenyang_bot_ids, shenyang_city],
+    'shenzhen': [shenzhen_box, shenzhen_timezone, shenzhen_loc, shenzhen_area,
+                 shenzhen_bot_ids, shenzhen_city],
+    'tianjin': [tianjin_box, tianjin_timezone, tianjin_loc, tianjin_area,
+                tianjin_bot_ids, tianjin_city],
+    'zhengzhou': [zhengzhou_box, zhengzhou_timezone, zhengzhou_loc,
+                  zhengzhou_area, zhengzhou_bot_ids, zhengzhou_city]}
+
+if __name__ == '__main__':
+    print(netherland_open_spaces)
+    print(cities_dict_netherland.keys())
+    print(cities_dict_netherland['netherland_5'])
+    print(os.listdir(weibo_path))
+    print(cities_dict_china.keys())
