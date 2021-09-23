@@ -27,6 +27,10 @@ The [Analysis](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_da
 - The [geopandas introduction page](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/geopandas_intro.ipynb) presents some basic spatial analysis conducted by using [geopandas](https://geopandas.org/).
 - The [utils.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/utils.py) and [data_paths.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/data_paths.py) saves some help functions and paths for this project.
 
+The [Data Collection](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Data_Collection) folder saves codes to collect the Twitter data.
+
+The [Shapefiles](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Shapefiles) folder contains the shapefiles for the spatial analysis.
+
 ## 4. Other Data Sources
 
 The following links give the source of other data sources for urban data analysis:
