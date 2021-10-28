@@ -46,6 +46,7 @@ The following links give the source of other data sources for urban data analysi
 - [ChinaAdminDivisionSHP](https://github.com/GaryBikini/ChinaAdminDivisonSHP): Chinese administrative division vector diagram, Shapefile format, four levels: country, province, city, district/county
 - [Hong Kong Monthly Traffic and Transport Digest](https://www.td.gov.hk/en/transport_in_hong_kong/transport_figures/monthly_traffic_and_transport_digest/index.html): The monthly key statistics of HK transportation data
 - [Hong Kong Census Data](https://www.bycensus2016.gov.hk/en/bc-dp-tpu.html): Census data for Hong Kong, including population, median income, etc.
+- [GoPUP](http://doc.gopup.cn/#/README): A very useful tool to collect the data in China, such as Weibo index data, Baidu index data, and Baidu search data
 
 ### 4.3 Foreign cities
 
