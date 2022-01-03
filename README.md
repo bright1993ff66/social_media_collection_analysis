@@ -4,13 +4,19 @@
 
 This repository saves data and codes for the social media data (including Twitter and Weibo) collection and analysis.
 
-## 2. Data Collection
+## 2. Data Collection and Preprocessing
+
+### 2.1 Twitter and Weibo Data Collection
 
 All the codes for social media data collection can be found in [Data_Collection](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Data_Collection) folder.
 
 For Twitter data, the secret key and access token are required. Please visit [Twitter Developer Page](https://developer.twitter.com/en) for more information about registering the Twitter developer account and getting the access key and token.
 
 For the Weibo data, this GitHub repository - [WeiboSpider](https://github.com/dataabc/weiboSpider) offers codes to collect the Weibo data based on user ids. The Weibo crawler requires to register the cookie. The detailed steps of generating the cookie is given [here](https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md).
+
+### 2.2 Data Preprocessing
+
+The general data preprocessing steps involve the following steps:
 
 ## 3. Social Media Data Analysis
 
@@ -33,33 +39,12 @@ The [Data Collection](https://gitlab.com/li_lishuai_group/changhaoliang/social_m
 The [Shapefiles](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Shapefiles) folder contains the shapefiles for the spatial analysis.
 - HK_tpu_project: epsg=2326
 
-## 4. Other Data Sources
-
-The following links give the source of other data sources for urban data analysis:
-
-### 4.1 World
-
-- [Satellite Imagery Datasets](https://github.com/chrieke/awesome-satellite-imagery-datasets): List of aerial and satellite imagery datasets with annotations for computer vision and deep learning.
-- [Openstreetmap](https://www.openstreetmap.org/#map=11/22.3567/114.1363): Map of a world with various information, including land use, Point-of-Interests (POIs), etc. The package [OSMPythonTools](https://wiki.openstreetmap.org/wiki/OSMPythonTools) offers a neat way to access the Openstreetmap through a Python API
-
-### 4.2 Chinese Cities
-
-- [ChinaAdminDivisionSHP](https://github.com/GaryBikini/ChinaAdminDivisonSHP): Chinese administrative division vector diagram, Shapefile format, four levels: country, province, city, district/county
-- [Hong Kong Monthly Traffic and Transport Digest](https://www.td.gov.hk/en/transport_in_hong_kong/transport_figures/monthly_traffic_and_transport_digest/index.html): The monthly key statistics of HK transportation data
-- [Hong Kong Census Data](https://www.bycensus2016.gov.hk/en/bc-dp-tpu.html): Census data for Hong Kong, including population, median income, etc.
-- [GoPUP](http://doc.gopup.cn/#/README): A very useful tool to collect the data in China, such as Weibo index data, Baidu index data, and Baidu search data
-
-### 4.3 Foreign cities
-
-- [bbike openstreetmap extractor](https://extract.bbbike.org/): The OpenStreetMap data extractor
-- [New York Open Data](https://opendata.cityofnewyork.us/data/): New York Open Data is free public data published by New York City agencies and other partners for research. Other US cities such as Chicago also offers [Chicago Data Portal](https://data.cityofchicago.org/)
-
-## 5. Requirements
+## 4. Requirements
 
 The following packages should be considered before managing this project:
 
-- Python 3.7 or later
-- R 3.4.1 or later
+- Python 3.7 or later (for social media data analysis)
+- R 3.4.1 or later (for Twitter data collection)
 - Spatial data analysis: [geopandas](https://geopandas.org/), [rasterio](https://rasterio.readthedocs.io/en/latest/), [pyproj](https://pyproj4.github.io/pyproj/stable/), [ArcGIS](https://www.arcgis.com/index.html), [QGIS](https://qgis.org/en/site/)
   - The installation process for [geopandas](https://geopandas.org/) on windows is quite complicated, especially with pip. Please check [this stackoverflow post](https://stackoverflow.com/questions/56958421/pip-install-geopandas-on-windows) for more information.
   - The [rasterio](https://rasterio.readthedocs.io/en/latest/) package conducts computation for the raster data.
@@ -69,5 +54,26 @@ The following packages should be considered before managing this project:
 - Cope with time: [datetime](https://docs.python.org/3/library/datetime.html) and [pytz](https://pypi.org/project/pytz/). A list of [pytz](https://pypi.org/project/pytz/) time zone is given [here](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)
 - Visualizations: [matplotlib](https://matplotlib.org/stable/index.html)
 
+
+## 5. Other Data Sources
+
+The following links give the source of other data sources for urban data analysis:
+
+### 5.1 World
+
+- [Satellite Imagery Datasets](https://github.com/chrieke/awesome-satellite-imagery-datasets): List of aerial and satellite imagery datasets with annotations for computer vision and deep learning.
+- [Openstreetmap](https://www.openstreetmap.org/#map=11/22.3567/114.1363): Map of a world with various information, including land use, Point-of-Interests (POIs), etc. The package [OSMPythonTools](https://wiki.openstreetmap.org/wiki/OSMPythonTools) offers a neat way to access the Openstreetmap through a Python API
+
+### 5.2 Chinese Cities
+
+- [ChinaAdminDivisionSHP](https://github.com/GaryBikini/ChinaAdminDivisonSHP): Chinese administrative division vector diagram, Shapefile format, four levels: country, province, city, district/county
+- [Hong Kong Monthly Traffic and Transport Digest](https://www.td.gov.hk/en/transport_in_hong_kong/transport_figures/monthly_traffic_and_transport_digest/index.html): The monthly key statistics of HK transportation data
+- [Hong Kong Census Data](https://www.bycensus2016.gov.hk/en/bc-dp-tpu.html): Census data for Hong Kong, including population, median income, etc.
+- [GoPUP](http://doc.gopup.cn/#/README): A very useful tool to collect the data in China, such as Weibo index data, Baidu index data, and Baidu search data
+
+### 5.3 Foreign cities
+
+- [bbike openstreetmap extractor](https://extract.bbbike.org/): The OpenStreetMap data extractor
+- [New York Open Data](https://opendata.cityofnewyork.us/data/): New York Open Data is free public data published by New York City agencies and other partners for research. Other US cities such as Chicago also offers [Chicago Data Portal](https://data.cityofchicago.org/)
 
 
