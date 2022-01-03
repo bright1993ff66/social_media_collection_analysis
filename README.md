@@ -18,16 +18,17 @@ For the Weibo data, this GitHub repository - [WeiboSpider](https://github.com/da
 
 The general data preprocessing steps involve the following steps:
 
-<u>For the semantic information</u>:
-
-- Only consider the messages posted in several languages (e.g., English and Chinese)
-- Remove the messages not containing the latitude and longitude information. Only consider the messages posted within, for instance, the city boundary
-
 <u>For the user information</u>:
 
 - Remove the bot accounts. We use the following rules to delete the bot accounts ([Coşkun & Özturan, 2018](https://www.mdpi.com/2078-2489/9/5/102/htm)):
   - whose number of tweets is 2 standard deviations away from the mean of the users from that city
   - whose most identified geographic footprint (latitude & longitude pair) accounts for over 60% of all the footprints
+
+<u>For the spatial and semantic information</u>:
+
+- Remove the messages not containing the latitude and longitude information. 
+- Only consider the messages posted within, for instance, the city boundary
+- Only extract the messages posted in some specific languages (e.g., English and Chinese)
 
 <u>For the temporal information</u>:
 
@@ -96,5 +97,7 @@ The following links give the source of other data sources for urban data analysi
 ## 6. Reference
 
 1. [Coşkun, M., & Ozturan, M. (2018). # europehappinessmap: A framework for multi-lingual sentiment analysis via social media big data (a Twitter case study). *Information*, *9*(5), 102.](https://sciprofiles.com/profile/402658)
-2. [Python – User object in Tweepy](https://www.geeksforgeeks.org/python-user-object-in-tweepy/)
+1. [WeiboSpider](https://github.com/dataabc/weiboSpider).
+1. [Twitter Developer Page](https://developer.twitter.com/en).
+2. [Python – User object in Tweepy](https://www.geeksforgeeks.org/python-user-object-in-tweepy/).
 
