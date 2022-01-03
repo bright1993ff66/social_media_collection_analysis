@@ -10,13 +10,30 @@ This repository saves data and codes for the social media data (including Twitte
 
 All the codes for social media data collection can be found in [Data_Collection](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Data_Collection) folder.
 
-For Twitter data, the secret key and access token are required. Please visit [Twitter Developer Page](https://developer.twitter.com/en) for more information about registering the Twitter developer account and getting the access key and token.
+For Twitter data, we use the Twitter Streaming API to collect the tweets. the secret key and access token are required. Please visit [Twitter Developer Page](https://developer.twitter.com/en) for more information about registering the Twitter developer account and getting the access key and token.
 
 For the Weibo data, this GitHub repository - [WeiboSpider](https://github.com/dataabc/weiboSpider) offers codes to collect the Weibo data based on user ids. The Weibo crawler requires to register the cookie. The detailed steps of generating the cookie is given [here](https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md).
 
 ### 2.2 Data Preprocessing
 
 The general data preprocessing steps involve the following steps:
+
+<u>For the semantic information</u>:
+
+- Only consider the messages posted in several languages (e.g., English and Chinese)
+- Remove the messages not containing the latitude and longitude information. Only consider the messages posted within, for instance, the city boundary
+
+<u>For the user information</u>:
+
+- Remove the bot accounts. We use the following rules to delete the bot accounts ([Coşkun & Özturan, 2018](https://www.mdpi.com/2078-2489/9/5/102/htm)):
+  - whose number of tweets is 2 standard deviations away from the mean of the users from that city
+  - whose most identified geographic footprint (latitude & longitude pair) accounts for over 60% of all the footprints
+
+<u>For the temporal information</u>:
+
+- Convert the time string to the structured python [datetime](https://docs.python.org/3/library/datetime.html) object
+
+The specific steps of data preprocessing are given in [Tweet_filtering.ipynb](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/Tweet_filtering.ipynb).
 
 ## 3. Social Media Data Analysis
 
@@ -76,4 +93,8 @@ The following links give the source of other data sources for urban data analysi
 - [bbike openstreetmap extractor](https://extract.bbbike.org/): The OpenStreetMap data extractor
 - [New York Open Data](https://opendata.cityofnewyork.us/data/): New York Open Data is free public data published by New York City agencies and other partners for research. Other US cities such as Chicago also offers [Chicago Data Portal](https://data.cityofchicago.org/)
 
+## 6. Reference
+
+1. [Coşkun, M., & Ozturan, M. (2018). # europehappinessmap: A framework for multi-lingual sentiment analysis via social media big data (a Twitter case study). *Information*, *9*(5), 102.](https://sciprofiles.com/profile/402658)
+2. [Python – User object in Tweepy](https://www.geeksforgeeks.org/python-user-object-in-tweepy/)
 
