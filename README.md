@@ -97,6 +97,7 @@ The following links give the source of other data sources for urban data analysi
 ## 6. Reference
 
 1. [Coşkun, M., & Ozturan, M. (2018). # europehappinessmap: A framework for multi-lingual sentiment analysis via social media big data (a Twitter case study). *Information*, *9*(5), 102.](https://sciprofiles.com/profile/402658)
+1. [Incorporating twitter-based human activity information in spatial analysis of crashes in urban areas](https://www.sciencedirect.com/science/article/pii/S0001457517302269)
 1. [WeiboSpider](https://github.com/dataabc/weiboSpider).
 1. [Twitter Developer Page](https://developer.twitter.com/en).
 2. [Python – User object in Tweepy](https://www.geeksforgeeks.org/python-user-object-in-tweepy/).
