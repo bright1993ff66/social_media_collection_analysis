@@ -14,7 +14,13 @@ For Twitter data, we use the Twitter Streaming API to collect the tweets. the se
 
 For the Weibo data, this GitHub repository - [WeiboSpider](https://github.com/dataabc/weiboSpider) offers codes to collect the Weibo data based on user ids. The Weibo crawler requires to register the cookie. The detailed steps of generating the cookie is given [here](https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md).
 
-### 2.2 Data Preprocessing
+### 2.2 Data Overview
+
+We started collecting the Twitter data from May 2018. Please visit the [Tweet_Summary_Table.xlsx](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Tweet_Summary_Table.xlsx) for more specific information about the number of all tweets & geocoded tweets posted in the cities.
+
+For the Weibo data, we only collected Weibos between August 2011 and September 2014. The number of geocoded Weibos posted in the bounding boxes of major cities are given in [Geocoded_Weibo_Major_Cities_Summaries.csv](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Geocoded_Weibo_Major_Cities_Summaries.csv).
+
+### 2.3 Data Preprocessing
 
 The general data preprocessing steps involve the following steps:
 
@@ -35,6 +41,14 @@ The general data preprocessing steps involve the following steps:
 - Convert the time string to the structured python [datetime](https://docs.python.org/3/library/datetime.html) object
 
 The specific steps of data preprocessing are given in [Tweet_filtering.ipynb](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/Tweet_filtering.ipynb).
+
+### 2.4 Raw Data Storage
+
+All the collected Twitter data is stored in the server. Please login to the server and visit the following directory to get the tweets posted in each city:
+
+- /home/data_center/Social_Media/happyplacestweets
+
+The Weibo data is currently stored on a hard drive. Please contact the owner of this repository to retrieve the Weibo data.
 
 ## 3. Social Media Data Analysis
 
