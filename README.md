@@ -8,7 +8,7 @@ This repository saves data and codes for the social media data (including Twitte
 
 ### 2.1 Twitter and Weibo Data Collection
 
-All the codes for social media data collection can be found in [Data_Collection](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Data_Collection) folder.
+All the codes for social media data collection can be found in [Data_Collection](https://github.com/bright1993ff66/social_media_collection_analysis/tree/master/Data_Collection) folder.
 
 For Twitter data, we use the Twitter Streaming API to collect the tweets. the secret key and access token are required. Please visit [Twitter Developer Page](https://developer.twitter.com/en) for more information about registering the Twitter developer account and getting the access key and token.
 
@@ -16,9 +16,9 @@ For the Weibo data, this GitHub repository - [WeiboSpider](https://github.com/da
 
 ### 2.2 Data Overview
 
-We started collecting the Twitter data from May 2018. Please visit the [Tweet_Summary_Table.xlsx](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Tweet_Summary_Table.xlsx) for more specific information about the number of all tweets & geocoded tweets posted in the cities.
+We started collecting the Twitter data from May 2018. Please visit the [Tweet_Summary_Table.xlsx](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Tweet_Summary_Table.xlsx) for more specific information about the number of all tweets & geocoded tweets posted in the cities.
 
-For the Weibo data, we only collected Weibos between August 2011 and September 2014. The number of geocoded Weibos posted in the bounding boxes of major cities are given in [Geocoded_Weibo_Major_Cities_Summaries.csv](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Geocoded_Weibo_Major_Cities_Summaries.csv).
+For the Weibo data, we only collected Weibos between August 2011 and September 2014. The number of geocoded Weibos posted in the bounding boxes of major cities are given in [Geocoded_Weibo_Major_Cities_Summaries.csv](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Geocoded_Weibo_Major_Cities_Summaries.csv).
 
 ### 2.3 Data Preprocessing
 
@@ -40,7 +40,7 @@ The general data preprocessing steps involve the following steps:
 
 - Convert the time string to the structured python [datetime](https://docs.python.org/3/library/datetime.html) object
 
-The specific steps of data preprocessing are given in [Tweet_filtering.ipynb](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/Tweet_filtering.ipynb).
+The specific steps of data preprocessing are given in [Tweet_filtering.ipynb](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/Tweet_filtering.ipynb).
 
 ### 2.4 Raw Data Storage
 
@@ -52,23 +52,23 @@ The Weibo data is currently stored on a hard drive. Please contact the owner of 
 
 ## 3. Social Media Data Analysis
 
-The [Analysis](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Analysis) folder saves the codes for Twitter & Weibo data analysis.
+The [Analysis](https://github.com/bright1993ff66/social_media_collection_analysis/tree/master/Analysis) folder saves the codes for Twitter & Weibo data analysis.
 
-- The [Tweet_Data_Description.ipynb](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/Tweet_Data_Description.ipynb) saves a description of collected tweet data and some basic time, text, and spatial analysis.
-- The [Tweet_filtering.ipynb](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/Tweet_filtering.ipynb) saves the general tweet filtering process, including considering tweets posted in preferred languages, keeping the geocoded tweets, and removing the bot accounts.
-- The [cities_bounds.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/cities_bounds.py) saves the profiles of each city, including the bounding box, timezone, path to the tweet data, open space shapefile.
-- The [count_tweets.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/count_tweets.py) and [count_weibos.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/count_weibos.py) have the codes for counting the tweets posted in the cities and their open space.
-- The [spatial_analysis.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/spatial_analysis.py) stores the codes of finding the tweets or Weibos posted in a city's open space, based on the [geopandas spatial join function](https://geopandas.org/gallery/spatial_joins.html).
-- The [find_bot_accounts.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/find_bot_accounts.py) presents some functions to find the bot accounts. Here are some papers for reference:
+- The [Tweet_Data_Description.ipynb](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/Tweet_Data_Description.ipynb) saves a description of collected tweet data and some basic time, text, and spatial analysis.
+- The [Tweet_filtering.ipynb](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/Tweet_filtering.ipynb) saves the general tweet filtering process, including considering tweets posted in preferred languages, keeping the geocoded tweets, and removing the bot accounts.
+- The [cities_bounds.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/cities_bounds.py) saves the profiles of each city, including the bounding box, timezone, path to the tweet data, open space shapefile.
+- The [count_tweets.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/count_tweets.py) and [count_weibos.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/count_weibos.py) have the codes for counting the tweets posted in the cities and their open space.
+- The [spatial_analysis.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/spatial_analysis.py) stores the codes of finding the tweets or Weibos posted in a city's open space, based on the [geopandas spatial join function](https://geopandas.org/gallery/spatial_joins.html).
+- The [find_bot_accounts.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/find_bot_accounts.py) presents some functions to find the bot accounts. Here are some papers for reference:
   - [#europehappinessmap: A Framework for Multi-Lingual Sentiment Analysis via Social Media Big Data (A Twitter Case Study)](https://www.mdpi.com/2078-2489/9/5/102/htm)
   - [Incorporating twitter-based human activity information in spatial analysis of crashes in urban areas](https://www.sciencedirect.com/science/article/pii/S0001457517302269)
-- The [visualizations.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/visualizations.py) saves the functions to plotting the number of tweets or Weibos posted in the city and in the city's open space.
-- The [geopandas introduction page](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/geopandas_intro.ipynb) presents some basic spatial analysis conducted by using [geopandas](https://geopandas.org/).
-- The [utils.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/utils.py) and [data_paths.py](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/blob/master/Analysis/data_paths.py) saves some help functions and paths for this project.
+- The [visualizations.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/visualizations.py) saves the functions to plotting the number of tweets or Weibos posted in the city and in the city's open space.
+- The [geopandas introduction page](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/geopandas_intro.ipynb) presents some basic spatial analysis conducted by using [geopandas](https://geopandas.org/).
+- The [utils.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/utils.py) and [data_paths.py](https://github.com/bright1993ff66/social_media_collection_analysis/blob/master/Analysis/data_paths.py) saves some help functions and paths for this project.
 
-The [Data Collection](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Data_Collection) folder saves codes to collect the Twitter data.
+The [Data Collection](https://github.com/bright1993ff66/social_media_collection_analysis/tree/master/Data_Collection) folder saves codes to collect the Twitter data.
 
-The [Shapefiles](https://gitlab.com/li_lishuai_group/changhaoliang/social_media_data_collection_analysis/-/tree/master/Shapefiles) folder contains the shapefiles for the spatial analysis.
+The [Shapefiles](https://github.com/bright1993ff66/social_media_collection_analysis/tree/master/Shapefiles) folder contains the shapefiles for the spatial analysis.
 - HK_tpu_project: epsg=2326
 
 ## 4. Requirements
